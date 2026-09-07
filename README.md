@@ -1,8 +1,8 @@
 # BeeRoom × Hermes Showcase
 
-This repository is a sanitized, documentation-only showcase of the BeeRoom business architecture and its integration with Hermes Agent.
+This repository is a sanitized showcase of the BeeRoom business architecture, selected business-code modules, and its integration with Hermes Agent.
 
-It contains no production code, real user data, AI API keys, Telegram credentials, server configuration, database credentials, or local file paths.
+It contains no production deployment code, real user data, AI API keys, Telegram credentials, server configuration, database credentials, or local file paths.
 
 ## Business goal
 
