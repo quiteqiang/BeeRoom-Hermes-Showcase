@@ -6,10 +6,12 @@
 *.sqlite
 *.sqlite3
 .DS_Store
+data/
 __pycache__/
 .pytest_cache/
 .venv/
 .venv-*/
+.vite/
 node_modules/
 dist/
 test-results/
