@@ -75,6 +75,21 @@ Teacher's natural-language message
 
 - [Business and Hermes integration architecture](docs/business-architecture.md)
 
+## Business code snapshot
+
+The public code is organized around the business flow:
+
+```text
+backend/app/models.py          two-table persistence model
+backend/app/schemas/            API contracts
+backend/app/repositories/      student and comment operations
+backend/app/services/           matching and text ingestion
+backend/app/api/                student and comment endpoints
+frontend/src/                   teacher-facing workflow pages
+```
+
+This is a reviewable business-code snapshot. Deployment files, environment files, database snapshots, provider adapters, messaging credentials, and local development server settings are intentionally excluded.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
