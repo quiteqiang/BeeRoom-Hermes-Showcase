@@ -1,0 +1,8 @@
+# Keep local credentials, databases, and generated files out of the showcase repo.
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+.DS_Store
