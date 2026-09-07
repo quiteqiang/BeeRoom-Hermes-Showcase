@@ -1,77 +1,86 @@
 # BeeRoom × Hermes Showcase
 
-这是一个用于展示业务架构的脱敏文档仓库，介绍 BeeRoom 如何与 Hermes Agent 集成，帮助教师通过自然语言记录和管理学生评语。
+This repository is a sanitized, documentation-only showcase of the BeeRoom business architecture and its integration with Hermes Agent.
 
-仓库只保留业务说明，不包含生产代码、真实数据、AI API key、Telegram credential、服务器配置、数据库凭据或本地文件路径。
+It contains no production code, real user data, AI API keys, Telegram credentials, server configuration, database credentials, or local file paths.
 
-## 业务目标
+## Business goal
 
-教师在课堂或课后可以直接用自然语言表达意图，例如：
+Teachers often capture classroom observations as short, informal notes: a student understood a concept, helped a classmate, participated actively, or needs encouragement. BeeRoom turns these observations into reviewable student comments without requiring the teacher to stop and complete a complex form.
 
-> 给学生 A 加一句：今天主动帮助同学整理材料。
+A teacher can write a message such as:
 
-系统负责完成以下工作：
+> Add a note for Student A: they took the initiative to help a classmate organize the materials today.
 
-1. 理解教师的自然语言。
-2. 匹配正确的学生。
-3. 将内容整理成结构化评语。
-4. 在写入前展示预览并请求确认。
-5. 将新评语放入待审核队列。
-6. 审核后出现在学生的评语时间线中。
+The system then:
 
-## 总体架构
+1. Understands the teacher's natural-language intent.
+2. Matches the correct student.
+3. Converts the observation into a structured comment.
+4. Shows a preview and asks for confirmation before writing.
+5. Places the new comment in a review queue.
+6. Shows the approved comment in the student's timeline.
+
+## Architecture
 
 ```mermaid
 flowchart LR
-    T[教师] --> TG[消息入口]
-    TG --> H[Hermes Agent\n自然语言理解与工具编排]
-    H --> I[集成层\n意图校验与 API 客户端]
-    I --> B[BeeRoom API\n业务规则与权限边界]
-    B --> D[(业务数据库\n学生 + 评语)]
-    B --> W[教师 Web 界面]
+    T[Teacher] --> TG[Messaging channel]
+    TG --> H[Hermes Agent\nNatural-language understanding\nand tool orchestration]
+    H --> I[Integration layer\nIntent validation\nand API client]
+    I --> B[BeeRoom API\nBusiness rules\nand access boundary]
+    B --> D[(Business database\nStudents + comments)]
+    B --> W[Teacher web interface]
     W --> B
 ```
 
-Hermes 负责理解意图和选择工具，BeeRoom API 负责业务校验和数据读写。Hermes 不直接访问数据库，也不执行任意 SQL。
+Hermes understands intent and selects approved tools. The BeeRoom API validates business rules and performs data access. Hermes never connects directly to the database and never executes arbitrary SQL.
 
-## 核心数据模型
+## Core data model
 
-系统将业务模型保持为两张核心表：
+The business model is intentionally kept to two core tables:
 
-| 表 | 用途 |
+| Table | Purpose |
 |---|---|
-| `student` | 学生身份、学号、班级、年级和别名 |
-| `comment` | 日期、主题、类别、评语正文、证据、来源和审核状态 |
+| `student` | Student identity, student code, class, year level, and aliases |
+| `comment` | Date, topic, category, comment text, evidence, source, and review status |
 
-评语通过 `student_id` 与学生关联；无法唯一匹配的内容可以先进入待处理状态，避免误记到错误学生名下。
+Comments reference students through `student_id`. If a name cannot be matched uniquely, the content can remain unassigned for review rather than being attached to the wrong student.
 
-## 一条消息的处理流程
+## Message flow
 
 ```text
-教师自然语言
-  → Hermes 识别动作、学生、日期和内容
-  → 查询学生并检查是否唯一
-  → 生成写入预览
-  → 教师明确确认
-  → 调用 BeeRoom 业务 API
-  → 评语进入待审核队列
-  → 教师审核后进入学生时间线
+Teacher's natural-language message
+  → Hermes identifies the action, student, date, and content
+  → Student lookup and uniqueness check
+  → Write preview
+  → Explicit teacher confirmation
+  → BeeRoom business API call
+  → Comment enters the review queue
+  → Teacher approval
+  → Comment appears in the student timeline
 ```
 
-## 设计原则
+## Integration principles
 
-- API 是唯一的业务数据读写入口。
-- 所有写操作都需要明确确认。
-- 同名学生不能凭猜测绑定，必须追问班级或学号。
-- 新评语默认处于待审核状态。
-- 原始自然语言可以作为来源保留，但不能替代结构化校验。
-- 错误信息向教师提供可理解的提示，不暴露内部路径、标识符或凭据。
-- 展示环境使用占位符，不连接任何真实服务。
+- The API is the only business data read/write entry point.
+- Every write operation requires explicit confirmation.
+- Ambiguous student names require a follow-up question; Hermes must not guess.
+- New comments enter a pending-review state by default.
+- Original natural-language input can be retained as source context, but does not bypass structured validation.
+- User-facing errors are understandable and do not expose internal identifiers, paths, or credentials.
+- The showcase uses abstract component names and placeholders only; it does not connect to a real service.
 
-## 文档
+## Documentation
 
-- [业务与 Hermes 集成架构](docs/business-architecture.md)
+- [Business and Hermes integration architecture](docs/business-architecture.md)
 
-## 免责声明
+## Showcase scope
 
-本仓库是架构展示材料，不是可直接部署的生产系统。任何真实部署都需要单独配置身份认证、访问控制、密钥管理、日志策略和数据保护措施；这些配置不会放在本仓库中。
+This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
+
+It intentionally does not provide production credentials, real service endpoints, deployment scripts, database snapshots, or an unrestricted natural-language-to-SQL executor.
+
+## Disclaimer
+
+This is architecture material for demonstration purposes, not a deployable production system. A real deployment requires separately managed authentication, access control, secret management, logging, backups, data retention, and privacy controls. Those operational details do not belong in this public repository.
