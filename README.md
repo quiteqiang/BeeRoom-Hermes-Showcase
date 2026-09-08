@@ -270,6 +270,18 @@ Source: [Hermes Tool Search](https://hermes-agent.nousresearch.com/docs/user-gui
 
 Source: [Hermes LSP — Semantic Diagnostics](https://hermes-agent.nousresearch.com/docs/user-guide/features/lsp).
 
++### 14. Curator
+
+**Capability and business value.** Hermes Curator tracks use of agent-created skills, moves inactive skills through active, stale, and archived states, and proposes consolidation or drift fixes. This can prevent multiple ClassNote workflow skills from competing for context.
+
+**Proposed integration and data flow.** Protect the core comment workflow skill and use Curator for optional report-writing, roster-import, and experimental skills: skill update → usage tracking → inactivity or drift signal → maintainer reviews proposed change → approved version is published or safely archived.
+
+**Implementation boundary.** No ClassNote database change is needed. Keep skill ownership, version, and review metadata in the private maintenance process rather than in student or comment tables.
+
+**Risks and recommendation.** A rarely used safeguarding rule could be misclassified as stale, and generated patches can change behavior. Exclude mandatory skills, review every patch, and preserve recoverable history. Recommend Curator after the skill library grows beyond manual management.
+
+Source: [Hermes Curator](https://hermes-agent.nousresearch.com/docs/user-guide/features/curator).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
