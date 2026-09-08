@@ -258,6 +258,18 @@ Source: [Hermes Document Extraction](https://hermes-agent.nousresearch.com/docs/
 
 Source: [Hermes Tool Search](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-search).
 
++### 13. LSP semantic diagnostics
+
+**Capability and business value.** Hermes can run language servers after file edits and report new semantic diagnostics such as type errors, unresolved names, and missing imports. This is useful for keeping the ClassNote backend, frontend, and integration client aligned.
+
+**Proposed integration and data flow.** Use LSP during development, not in the teacher-facing workflow: developer edits integration code → Hermes captures a baseline → the change is applied → new diagnostics are reported → tests and review decide whether the change is publishable.
+
+**Implementation boundary.** No runtime database or API change is required. Keep language-server setup generic and treat API contract tests as the authority for business correctness.
+
+**Risks and recommendation.** Toolchain differences can create noisy or incomplete diagnostics, and a clean semantic check does not prove correct student matching. Recommend LSP as a development quality gate and never as a production dependency.
+
+Source: [Hermes LSP — Semantic Diagnostics](https://hermes-agent.nousresearch.com/docs/user-guide/features/lsp).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
