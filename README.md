@@ -192,6 +192,20 @@ Source: [Hermes Checkpoints and `/rollback`](https://hermes-agent.nousresearch.c
 
 Source: [Hermes Scheduled Tasks](https://hermes-agent.nousresearch.com/docs/user-guide/features/cron).
 
+### 8. Subagent delegation
+
+**Capability.** Hermes can delegate independent work to child agents with isolated context and inherited tool access. The parent receives a final summary, while background completion delivery can be retried when a gateway or session route is temporarily unavailable.
+
+**BeeRoom integration.** Delegate bounded, read-only tasks such as summarizing observations for separate classes, checking alias candidates, or generating a draft report. The parent agent remains the orchestrator: it combines results, resolves conflicts, presents one preview, and owns the only confirmation that can reach a write tool.
+
+**End-to-end flow.** Parent receives a request → partitions it by class or report section → children call scoped read-only BeeRoom tools → each child returns structured findings with confidence and source IDs → parent merges and deduplicates → teacher confirms the final preview → parent performs one idempotent API write per approved comment.
+
+**Interfaces and feasibility.** Define a child-task envelope containing tenant, teacher, class scope, purpose, deadline, and maximum records; define a structured result with errors instead of free-form success claims. Add bounded concurrency and retry handling. This is feasible for reporting, but should not be the first path for simple single-student comments.
+
+**Security decision.** Children receive the minimum data and tools necessary, never credentials or unrestricted terminal access. Child agents cannot approve comments, alter class membership, or write directly. Treat late, duplicated, or partial completions as untrusted until the parent validates them and the API enforces idempotency.
+
+Source: [Hermes Subagent Delegation](https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
