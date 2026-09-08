@@ -206,6 +206,20 @@ Source: [Hermes Scheduled Tasks](https://hermes-agent.nousresearch.com/docs/user
 
 Source: [Hermes Subagent Delegation](https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation).
 
+### 9. Code execution
+
+**Capability.** Hermes can run generated Python that calls Hermes tools programmatically. Intermediate tool results stay inside the script and only the final printed output returns to the model, which is useful for loops, filtering, and multi-step transformations.
+
+**BeeRoom integration.** Use this capability for deterministic, bounded processing around the API: normalize a batch of observations, validate candidate mappings, calculate a report, or transform a review-queue response into a teacher-friendly summary. The script should call typed BeeRoom tools or the integration client, never construct SQL or open the database directly.
+
+**End-to-end flow.** Hermes receives a batch request → a sandboxed script calls read-only BeeRoom operations → the script validates and reduces the results → it prints a typed summary → Hermes presents a preview or asks a follow-up question. Any mutation still goes through the normal confirmation and API write tool outside the script.
+
+**Interfaces and feasibility.** Define maximum input size, execution time, output schema, and allowed tool names. Start with read-only report generation; add a separate, audited batch-write operation only after idempotency and partial-failure behavior are proven. This is feasible, but it is more complex than direct tool calls and should be reserved for genuinely multi-step work.
+
+**Security decision.** Run with no database socket, no secret environment variables, no unrestricted network, and no arbitrary filesystem access. Redact student content from exceptions and logs. If the sandbox is unavailable, fail closed and return a normal user-facing error rather than falling back to arbitrary shell execution.
+
+Source: [Hermes Code Execution](https://hermes-agent.nousresearch.com/docs/user-guide/features/code-execution).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
