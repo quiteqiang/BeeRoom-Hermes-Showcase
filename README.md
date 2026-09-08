@@ -150,6 +150,20 @@ Source: [Hermes Persistent Memory](https://hermes-agent.nousresearch.com/docs/us
 
 Source: [Hermes Context Files](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files).
 
+### 5. Context references
+
+**Capability.** Hermes can expand references such as a file, folder, diff, recent Git history, or URL inline in a message. This lets a user attach precise context without copying an entire document into chat.
+
+**BeeRoom integration.** Use references for teacher-controlled, reviewable inputs such as a sanitized class roster export, an observation draft, or a selected report. The integration layer should convert referenced content into a bounded structured payload before calling BeeRoom; a reference must never become a direct database or filesystem capability.
+
+**End-to-end flow.** Teacher attaches an allowed context reference → Hermes receives the expanded content → the skill extracts student candidates and observation text → Hermes calls read-only lookup and preview tools → teacher confirms → the API writes the pending comment. If the reference is too large, unsupported, or ambiguous, the agent asks for a narrower input.
+
+**Interfaces and feasibility.** Define an attachment envelope with source type, content hash, size limit, and redaction status. Add an API-side validation step that accepts only the fields needed by the comment workflow. This is feasible for file-based workflows; URL references should remain disabled initially because they create an additional data-exfiltration and freshness boundary.
+
+**Security decision.** Enforce an allowlist of reference types and paths in the Hermes integration layer, strip secrets and unnecessary personal data, and avoid returning raw attachments in logs. Never allow `@diff` or arbitrary URLs to bypass the confirmation and privacy checks.
+
+Source: [Hermes Context References](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-references).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
