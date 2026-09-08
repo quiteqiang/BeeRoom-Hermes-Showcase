@@ -294,6 +294,18 @@ Source: [Hermes Curator](https://hermes-agent.nousresearch.com/docs/user-guide/f
 
 Source: [Hermes Memory Providers](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers).
 
++### 16. Honcho Memory
+
+**Capability and business value.** Honcho is a memory provider that builds a persistent model of user preferences, communication style, goals, and patterns, with session summaries, semantic search, conclusions, and separated peer profiles. It may improve continuity for a teacher but is unnecessary for a simple comment.
+
+**Proposed integration and data flow.** If evaluated, connect it only to a teacher-preference adapter: opt in → retrieve scoped preference context → generate preview → ClassNote performs identity and business validation → teacher confirms → record a minimal preference update if permitted.
+
+**Implementation boundary.** No student or comment schema change is needed. Add consent, provider status, and deletion controls at the integration or account-settings layer, with a hard separation between teacher profile data and classroom records.
+
+**Risks and recommendation.** Inferred personal information can exceed the teacher’s intent, and an external provider adds compliance and availability dependencies. Recommend not adopting Honcho for the first production version; consider only a tightly limited preference pilot.
+
+Source: [Hermes Honcho Memory](https://hermes-agent.nousresearch.com/docs/user-guide/features/honcho).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
