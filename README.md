@@ -178,6 +178,20 @@ Source: [Hermes Context References](https://hermes-agent.nousresearch.com/docs/u
 
 Source: [Hermes Checkpoints and `/rollback`](https://hermes-agent.nousresearch.com/docs/user-guide/checkpoints-and-rollback).
 
+### 7. Scheduled tasks (Cron)
+
+**Capability.** Hermes exposes scheduled one-shot and recurring tasks through a cron tool. Jobs can be paused, resumed, edited, triggered, and delivered back to the originating chat or a configured platform target; a job may also run without an LLM when a deterministic script is sufficient.
+
+**BeeRoom integration.** Use this for read-only classroom workflows such as a daily pending-review digest, a weekly observation summary, or a reminder to review unapproved comments. A scheduled job may call a reporting endpoint and send a concise result to the teacher, but it must not silently create comments or approve them.
+
+**End-to-end flow.** Teacher asks Hermes to schedule a digest → Hermes stores the schedule → at fire time the job calls a scoped BeeRoom reporting tool → the API checks teacher and class access → Hermes formats the result → the configured messaging adapter delivers it. Any write action should return to the normal preview and confirmation flow.
+
+**Interfaces and feasibility.** Add a read-only `review_summary` API contract with a time window, class scope, and result limit. Keep schedule ownership and provider/model policy in the Hermes runtime at first; only add a BeeRoom schedule table if product requirements later need a web dashboard or cross-channel management. This is feasible as a low-risk read path.
+
+**Security decision.** Require an explicit owner and class scope for every job, avoid placing student names in job titles, pin the execution policy for unattended jobs, and fail closed when authorization or the configured model is unavailable. Do not put credentials, private destinations, or raw student records into the public repository.
+
+Source: [Hermes Scheduled Tasks](https://hermes-agent.nousresearch.com/docs/user-guide/features/cron).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
