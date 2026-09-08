@@ -282,6 +282,18 @@ Source: [Hermes LSP — Semantic Diagnostics](https://hermes-agent.nousresearch.
 
 Source: [Hermes Curator](https://hermes-agent.nousresearch.com/docs/user-guide/features/curator).
 
++### 15. External memory providers
+
+**Capability and business value.** Hermes supports external memory-provider plugins for cross-session knowledge, background prefetching, conversation synchronization, memory extraction, and provider-specific memory tools. This could reduce repeated setup questions about a teacher’s preferred language or comment tone.
+
+**Proposed integration and data flow.** Use an external provider only for teacher-scoped preferences: opt-in → provider returns preference context → Hermes drafts a preview → ClassNote API validates current student data → teacher confirms → only permitted preference metadata is synchronized.
+
+**Implementation boundary.** No core database change is required initially. Define a provider-neutral preference contract, consent and deletion controls, retention policy, and tenant scope. Provider credentials and configuration stay outside the public repository.
+
+**Risks and recommendation.** External storage expands the privacy boundary and may return stale or cross-tenant context. Start with built-in memory, prohibit student records from synchronization, and add a provider only after consent and deletion behavior are tested.
+
+Source: [Hermes Memory Providers](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
