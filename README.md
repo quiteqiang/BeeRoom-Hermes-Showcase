@@ -164,6 +164,20 @@ Source: [Hermes Context Files](https://hermes-agent.nousresearch.com/docs/user-g
 
 Source: [Hermes Context References](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-references).
 
+### 6. Checkpoints and rollback
+
+**Capability.** Hermes can snapshot a project before destructive file or terminal operations and restore a previous checkpoint. The feature is a development safety net; it is separate from the application's business data.
+
+**BeeRoom integration.** Enable checkpoints for Hermes work that edits the public integration skill, context contract, or showcase code. For runtime comments, use BeeRoom's domain workflow instead: a pending review queue, explicit approval, and a correction path. Rolling back a project file must not be treated as rolling back a comment already written to the API.
+
+**End-to-end flow.** Hermes prepares a code or contract change → checkpoint is created → tests and security scan run → the change is committed or restored. Separately, a teacher message follows preview → confirmation → API write → review. The two rollback domains stay clearly separated in the user-facing status message.
+
+**Interfaces and feasibility.** No production schema change is needed. Add an audit or request ID to the API response so the UI can direct a teacher to edit or reject the domain object rather than suggesting a filesystem rollback. This is feasible and useful for maintaining the integration artifacts.
+
+**Security decision.** Checkpoints may retain historical file content, so they need the same access and retention controls as the workspace. Never checkpoint a directory containing runtime secrets or real student exports in the public showcase workflow, and do not expose rollback commands through the teacher-facing business toolset.
+
+Source: [Hermes Checkpoints and `/rollback`](https://hermes-agent.nousresearch.com/docs/user-guide/checkpoints-and-rollback).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
