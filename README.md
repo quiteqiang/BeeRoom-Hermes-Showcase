@@ -1,12 +1,12 @@
-# SchoolRoom × Hermes Showcase
+# ClassNote × Hermes Showcase
 
-This repository is a sanitized showcase of the SchoolRoom business architecture, selected business-code modules, and its integration with Hermes Agent.
+This repository is a sanitized showcase of the ClassNote business architecture, selected business-code modules, and its integration with Hermes Agent.
 
 It contains no production deployment code, real user data, AI API keys, Telegram credentials, server configuration, database credentials, or local file paths.
 
 ## Business goal
 
-Teachers often capture classroom observations as short, informal notes: a student understood a concept, helped a classmate, participated actively, or needs encouragement. SchoolRoom turns these observations into reviewable student comments without requiring the teacher to stop and complete a complex form.
+Teachers often capture classroom observations as short, informal notes: a student understood a concept, helped a classmate, participated actively, or needs encouragement. ClassNote turns these observations into reviewable student comments without requiring the teacher to stop and complete a complex form.
 
 A teacher can write a message such as:
 
@@ -28,13 +28,13 @@ flowchart LR
     T[Teacher] --> TG[Messaging channel]
     TG --> H[Hermes Agent\nNatural-language understanding\nand tool orchestration]
     H --> I[Integration layer\nIntent validation\nand API client]
-    I --> B[SchoolRoom API\nBusiness rules\nand access boundary]
+    I --> B[ClassNote API\nBusiness rules\nand access boundary]
     B --> D[(Business database\nStudents + comments)]
     B --> W[Teacher web interface]
     W --> B
 ```
 
-Hermes understands intent and selects approved tools. The SchoolRoom API validates business rules and performs data access. Hermes never connects directly to the database and never executes arbitrary SQL.
+Hermes understands intent and selects approved tools. The ClassNote API validates business rules and performs data access. Hermes never connects directly to the database and never executes arbitrary SQL.
 
 ## Core data model
 
@@ -55,7 +55,7 @@ Teacher's natural-language message
   → Student lookup and uniqueness check
   → Write preview
   → Explicit teacher confirmation
-  → SchoolRoom business API call
+  → ClassNote business API call
   → Comment enters the review queue
   → Teacher approval
   → Comment appears in the student timeline
@@ -92,19 +92,19 @@ This is a reviewable business-code snapshot. Deployment files, environment files
 
 ## Hermes feature integration notes
 
-The following notes record how selected Hermes capabilities could be integrated into SchoolRoom. Each feature is evaluated at the system boundary first; the public code snapshot remains intentionally provider-neutral and does not contain operational Hermes configuration.
+The following notes record how selected Hermes capabilities could be integrated into ClassNote. Each feature is evaluated at the system boundary first; the public code snapshot remains intentionally provider-neutral and does not contain operational Hermes configuration.
 
 ### 1. Tools and toolsets
 
 **Capability.** Hermes groups callable tools into toolsets that can be enabled or disabled per platform. The documented tool categories include web, terminal and file operations, orchestration, memory, automation, and integrations.
 
-**SchoolRoom integration.** Add a small, dedicated SchoolRoom toolset containing only business-safe operations such as `find_students`, `preview_comment`, `submit_comment`, and `list_review_queue`. Hermes can use read-only tools for lookup and preview; the write tool should be exposed only after an explicit confirmation turn. The integration layer remains an API client, so Hermes never receives database credentials and never generates executable SQL.
+**ClassNote integration.** Add a small, dedicated ClassNote toolset containing only business-safe operations such as `find_students`, `preview_comment`, `submit_comment`, and `list_review_queue`. Hermes can use read-only tools for lookup and preview; the write tool should be exposed only after an explicit confirmation turn. The integration layer remains an API client, so Hermes never receives database credentials and never generates executable SQL.
 
-**End-to-end flow.** Telegram message → Hermes intent extraction → student lookup tool → disambiguation if needed → preview tool → teacher confirmation → submit tool → SchoolRoom API validation → pending comment. The API should enforce the same rules even if a tool is called incorrectly.
+**End-to-end flow.** Telegram message → Hermes intent extraction → student lookup tool → disambiguation if needed → preview tool → teacher confirmation → submit tool → ClassNote API validation → pending comment. The API should enforce the same rules even if a tool is called incorrectly.
 
 **Interfaces and feasibility.** Define stable JSON schemas for tool inputs and outputs, include an idempotency key for writes, and return user-safe error codes. This is highly feasible because it fits the existing API boundary; the main dependency is a Hermes adapter that registers the allowlisted tools.
 
-**Security decision.** Do not enable general terminal, filesystem, or arbitrary database tools for the production SchoolRoom conversation. Keep business tools narrowly scoped, log tool names and request IDs rather than raw student content, and require confirmation for every mutation.
+**Security decision.** Do not enable general terminal, filesystem, or arbitrary database tools for the production ClassNote conversation. Keep business tools narrowly scoped, log tool names and request IDs rather than raw student content, and require confirmation for every mutation.
 
 Source: [Hermes Tools & Toolsets](https://hermes-agent.nousresearch.com/docs/user-guide/features/tools) and [Hermes feature overview](https://hermes-agent.nousresearch.com/docs/user-guide/features/overview).
 
@@ -112,9 +112,9 @@ Source: [Hermes Tools & Toolsets](https://hermes-agent.nousresearch.com/docs/use
 
 **Capability.** Hermes skills are on-demand knowledge and workflow documents. They are loaded when relevant instead of being placed into every prompt, and can encode repeatable procedures, domain rules, and tool usage.
 
-**SchoolRoom integration.** Provide a sanitized `schoolroom-comment-workflow` skill for the Hermes agent. It should describe how to recognize an observation, map it to the two-table model, resolve aliases, ask for clarification, create a preview, and request confirmation. The skill should contain examples and validation rules, but no student roster, secret, local path, or provider credential.
+**ClassNote integration.** Provide a sanitized `classnote-comment-workflow` skill for the Hermes agent. It should describe how to recognize an observation, map it to the two-table model, resolve aliases, ask for clarification, create a preview, and request confirmation. The skill should contain examples and validation rules, but no student roster, secret, local path, or provider credential.
 
-**End-to-end flow.** A teacher message activates the skill → the skill selects the allowlisted SchoolRoom tools → the API returns candidate students or a preview → Hermes follows the confirmation protocol → the API stores the pending comment. The skill improves consistency, while the API remains authoritative for validation.
+**End-to-end flow.** A teacher message activates the skill → the skill selects the allowlisted ClassNote tools → the API returns candidate students or a preview → Hermes follows the confirmation protocol → the API stores the pending comment. The skill improves consistency, while the API remains authoritative for validation.
 
 **Interfaces and feasibility.** Version the skill with the public business contract and test it against representative ambiguous-name and duplicate-name cases. Keep the tool names and JSON fields aligned with `backend/app/schemas/`; no database change is required for the first version. This is feasible and is a low-risk way to keep natural-language behavior maintainable.
 
@@ -126,11 +126,11 @@ Source: [Hermes Skills System](https://hermes-agent.nousresearch.com/docs/user-g
 
 **Capability.** Hermes keeps bounded, curated memory across sessions, with separate space for agent notes and user preferences. The documentation also warns that memory is scoped to an agent profile and should not be shared casually by multiple agent processes.
 
-**SchoolRoom integration.** Use memory only for low-risk teacher preferences: a default class, preferred language, preferred comment tone, or whether previews should include evidence. Do not use it as the source of truth for student identity, safeguarding information, grades, or comment history; those belong behind the SchoolRoom API.
+**ClassNote integration.** Use memory only for low-risk teacher preferences: a default class, preferred language, preferred comment tone, or whether previews should include evidence. Do not use it as the source of truth for student identity, safeguarding information, grades, or comment history; those belong behind the ClassNote API.
 
 **End-to-end flow.** Teacher sets a preference → Hermes stores a minimal preference entry → later message is interpreted with that preference → the integration layer still sends explicit class and student identifiers to the API → the API applies authorization and business validation. A preference must never silently select among two students with the same name.
 
-**Interfaces and feasibility.** Add a profile-scoped preference adapter with `get_preferences` and `update_preferences`, or start with Hermes-managed memory and keep the SchoolRoom API stateless. The first option is feasible for a single teacher; a multi-teacher deployment should move shared preferences into an authenticated service with tenant isolation.
+**Interfaces and feasibility.** Add a profile-scoped preference adapter with `get_preferences` and `update_preferences`, or start with Hermes-managed memory and keep the ClassNote API stateless. The first option is feasible for a single teacher; a multi-teacher deployment should move shared preferences into an authenticated service with tenant isolation.
 
 **Security decision.** Apply data minimization, retention limits, and an exclusion list for sensitive student data. Provide a reset path and show the teacher when a stored preference affects a preview. Memory failures should degrade to an explicit question, not to a guessed class or student.
 
@@ -140,9 +140,9 @@ Source: [Hermes Persistent Memory](https://hermes-agent.nousresearch.com/docs/us
 
 **Capability.** Hermes discovers project context files and uses them to shape behavior, including project instructions, conventions, architecture notes, and personality guidance. The discovery and priority rules make repository-level instructions reusable across sessions.
 
-**SchoolRoom integration.** Maintain a sanitized project context document that describes the SchoolRoom domain vocabulary, two-table model, API boundary, review states, confirmation rules, and examples of safe responses. This gives Hermes a stable contract for natural-language orchestration without embedding operational configuration in the public code snapshot.
+**ClassNote integration.** Maintain a sanitized project context document that describes the ClassNote domain vocabulary, two-table model, API boundary, review states, confirmation rules, and examples of safe responses. This gives Hermes a stable contract for natural-language orchestration without embedding operational configuration in the public code snapshot.
 
-**End-to-end flow.** Hermes loads the project context at session start → teacher sends an observation → the agent applies the domain rules → selected tools perform lookup and preview → SchoolRoom validates and persists the result. When the contract changes, update the context document and the API schemas together.
+**End-to-end flow.** Hermes loads the project context at session start → teacher sends an observation → the agent applies the domain rules → selected tools perform lookup and preview → ClassNote validates and persists the result. When the contract changes, update the context document and the API schemas together.
 
 **Interfaces and feasibility.** Add a versioned context contract beside the business documentation and test it with the same sample messages used by the API tests. Keep deployment-specific instructions in a private, untracked override rather than in the showcase repository. This is immediately feasible and does not require a schema change.
 
@@ -154,7 +154,7 @@ Source: [Hermes Context Files](https://hermes-agent.nousresearch.com/docs/user-g
 
 **Capability.** Hermes can expand references such as a file, folder, diff, recent Git history, or URL inline in a message. This lets a user attach precise context without copying an entire document into chat.
 
-**SchoolRoom integration.** Use references for teacher-controlled, reviewable inputs such as a sanitized class roster export, an observation draft, or a selected report. The integration layer should convert referenced content into a bounded structured payload before calling SchoolRoom; a reference must never become a direct database or filesystem capability.
+**ClassNote integration.** Use references for teacher-controlled, reviewable inputs such as a sanitized class roster export, an observation draft, or a selected report. The integration layer should convert referenced content into a bounded structured payload before calling ClassNote; a reference must never become a direct database or filesystem capability.
 
 **End-to-end flow.** Teacher attaches an allowed context reference → Hermes receives the expanded content → the skill extracts student candidates and observation text → Hermes calls read-only lookup and preview tools → teacher confirms → the API writes the pending comment. If the reference is too large, unsupported, or ambiguous, the agent asks for a narrower input.
 
@@ -168,7 +168,7 @@ Source: [Hermes Context References](https://hermes-agent.nousresearch.com/docs/u
 
 **Capability.** Hermes can snapshot a project before destructive file or terminal operations and restore a previous checkpoint. The feature is a development safety net; it is separate from the application's business data.
 
-**SchoolRoom integration.** Enable checkpoints for Hermes work that edits the public integration skill, context contract, or showcase code. For runtime comments, use SchoolRoom's domain workflow instead: a pending review queue, explicit approval, and a correction path. Rolling back a project file must not be treated as rolling back a comment already written to the API.
+**ClassNote integration.** Enable checkpoints for Hermes work that edits the public integration skill, context contract, or showcase code. For runtime comments, use ClassNote's domain workflow instead: a pending review queue, explicit approval, and a correction path. Rolling back a project file must not be treated as rolling back a comment already written to the API.
 
 **End-to-end flow.** Hermes prepares a code or contract change → checkpoint is created → tests and security scan run → the change is committed or restored. Separately, a teacher message follows preview → confirmation → API write → review. The two rollback domains stay clearly separated in the user-facing status message.
 
@@ -182,11 +182,11 @@ Source: [Hermes Checkpoints and `/rollback`](https://hermes-agent.nousresearch.c
 
 **Capability.** Hermes exposes scheduled one-shot and recurring tasks through a cron tool. Jobs can be paused, resumed, edited, triggered, and delivered back to the originating chat or a configured platform target; a job may also run without an LLM when a deterministic script is sufficient.
 
-**SchoolRoom integration.** Use this for read-only classroom workflows such as a daily pending-review digest, a weekly observation summary, or a reminder to review unapproved comments. A scheduled job may call a reporting endpoint and send a concise result to the teacher, but it must not silently create comments or approve them.
+**ClassNote integration.** Use this for read-only classroom workflows such as a daily pending-review digest, a weekly observation summary, or a reminder to review unapproved comments. A scheduled job may call a reporting endpoint and send a concise result to the teacher, but it must not silently create comments or approve them.
 
-**End-to-end flow.** Teacher asks Hermes to schedule a digest → Hermes stores the schedule → at fire time the job calls a scoped SchoolRoom reporting tool → the API checks teacher and class access → Hermes formats the result → the configured messaging adapter delivers it. Any write action should return to the normal preview and confirmation flow.
+**End-to-end flow.** Teacher asks Hermes to schedule a digest → Hermes stores the schedule → at fire time the job calls a scoped ClassNote reporting tool → the API checks teacher and class access → Hermes formats the result → the configured messaging adapter delivers it. Any write action should return to the normal preview and confirmation flow.
 
-**Interfaces and feasibility.** Add a read-only `review_summary` API contract with a time window, class scope, and result limit. Keep schedule ownership and provider/model policy in the Hermes runtime at first; only add a SchoolRoom schedule table if product requirements later need a web dashboard or cross-channel management. This is feasible as a low-risk read path.
+**Interfaces and feasibility.** Add a read-only `review_summary` API contract with a time window, class scope, and result limit. Keep schedule ownership and provider/model policy in the Hermes runtime at first; only add a ClassNote schedule table if product requirements later need a web dashboard or cross-channel management. This is feasible as a low-risk read path.
 
 **Security decision.** Require an explicit owner and class scope for every job, avoid placing student names in job titles, pin the execution policy for unattended jobs, and fail closed when authorization or the configured model is unavailable. Do not put credentials, private destinations, or raw student records into the public repository.
 
@@ -196,9 +196,9 @@ Source: [Hermes Scheduled Tasks](https://hermes-agent.nousresearch.com/docs/user
 
 **Capability.** Hermes can delegate independent work to child agents with isolated context and inherited tool access. The parent receives a final summary, while background completion delivery can be retried when a gateway or session route is temporarily unavailable.
 
-**SchoolRoom integration.** Delegate bounded, read-only tasks such as summarizing observations for separate classes, checking alias candidates, or generating a draft report. The parent agent remains the orchestrator: it combines results, resolves conflicts, presents one preview, and owns the only confirmation that can reach a write tool.
+**ClassNote integration.** Delegate bounded, read-only tasks such as summarizing observations for separate classes, checking alias candidates, or generating a draft report. The parent agent remains the orchestrator: it combines results, resolves conflicts, presents one preview, and owns the only confirmation that can reach a write tool.
 
-**End-to-end flow.** Parent receives a request → partitions it by class or report section → children call scoped read-only SchoolRoom tools → each child returns structured findings with confidence and source IDs → parent merges and deduplicates → teacher confirms the final preview → parent performs one idempotent API write per approved comment.
+**End-to-end flow.** Parent receives a request → partitions it by class or report section → children call scoped read-only ClassNote tools → each child returns structured findings with confidence and source IDs → parent merges and deduplicates → teacher confirms the final preview → parent performs one idempotent API write per approved comment.
 
 **Interfaces and feasibility.** Define a child-task envelope containing tenant, teacher, class scope, purpose, deadline, and maximum records; define a structured result with errors instead of free-form success claims. Add bounded concurrency and retry handling. This is feasible for reporting, but should not be the first path for simple single-student comments.
 
@@ -210,9 +210,9 @@ Source: [Hermes Subagent Delegation](https://hermes-agent.nousresearch.com/docs/
 
 **Capability.** Hermes can run generated Python that calls Hermes tools programmatically. Intermediate tool results stay inside the script and only the final printed output returns to the model, which is useful for loops, filtering, and multi-step transformations.
 
-**SchoolRoom integration.** Use this capability for deterministic, bounded processing around the API: normalize a batch of observations, validate candidate mappings, calculate a report, or transform a review-queue response into a teacher-friendly summary. The script should call typed SchoolRoom tools or the integration client, never construct SQL or open the database directly.
+**ClassNote integration.** Use this capability for deterministic, bounded processing around the API: normalize a batch of observations, validate candidate mappings, calculate a report, or transform a review-queue response into a teacher-friendly summary. The script should call typed ClassNote tools or the integration client, never construct SQL or open the database directly.
 
-**End-to-end flow.** Hermes receives a batch request → a sandboxed script calls read-only SchoolRoom operations → the script validates and reduces the results → it prints a typed summary → Hermes presents a preview or asks a follow-up question. Any mutation still goes through the normal confirmation and API write tool outside the script.
+**End-to-end flow.** Hermes receives a batch request → a sandboxed script calls read-only ClassNote operations → the script validates and reduces the results → it prints a typed summary → Hermes presents a preview or asks a follow-up question. Any mutation still goes through the normal confirmation and API write tool outside the script.
 
 **Interfaces and feasibility.** Define maximum input size, execution time, output schema, and allowed tool names. Start with read-only report generation; add a separate, audited batch-write operation only after idempotency and partial-failure behavior are proven. This is feasible, but it is more complex than direct tool calls and should be reserved for genuinely multi-step work.
 
@@ -224,9 +224,9 @@ Source: [Hermes Code Execution](https://hermes-agent.nousresearch.com/docs/user-
 
 **Capability.** Hermes provides gateway, plugin, shell, and outbound webhook hooks at lifecycle points. Hooks can log, transform, inject context, measure activity, or block a tool call; callback failures are isolated, while control hooks can fail closed.
 
-**SchoolRoom integration.** Add a narrow integration hook set for audit and guardrails: record a request ID and high-level action, reject a write without a confirmation token, attach correlation metadata to API calls, and publish non-sensitive metrics for latency and errors. A post-write event can update observability, but the SchoolRoom API remains the source of truth for the result.
+**ClassNote integration.** Add a narrow integration hook set for audit and guardrails: record a request ID and high-level action, reject a write without a confirmation token, attach correlation metadata to API calls, and publish non-sensitive metrics for latency and errors. A post-write event can update observability, but the ClassNote API remains the source of truth for the result.
 
-**End-to-end flow.** Telegram message enters Hermes → a pre-tool hook checks platform identity, allowed tool, class scope, and confirmation state → the integration client calls SchoolRoom → the API validates and persists → a post-tool hook records success or failure without raw student text → Hermes replies with the API result. Hook failure must never turn an unconfirmed request into a write.
+**End-to-end flow.** Telegram message enters Hermes → a pre-tool hook checks platform identity, allowed tool, class scope, and confirmation state → the integration client calls ClassNote → the API validates and persists → a post-tool hook records success or failure without raw student text → Hermes replies with the API result. Hook failure must never turn an unconfirmed request into a write.
 
 **Interfaces and feasibility.** Standardize a small event envelope with event type, correlation ID, actor scope, tool name, outcome, and retention classification. Keep business authorization in the API and use hooks as a second guardrail and audit signal. This is feasible and valuable once the basic toolset exists; begin with logging and pre-write blocking.
 
