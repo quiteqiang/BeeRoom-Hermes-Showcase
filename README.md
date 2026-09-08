@@ -220,6 +220,20 @@ Source: [Hermes Subagent Delegation](https://hermes-agent.nousresearch.com/docs/
 
 Source: [Hermes Code Execution](https://hermes-agent.nousresearch.com/docs/user-guide/features/code-execution).
 
+### 10. Event hooks
+
+**Capability.** Hermes provides gateway, plugin, shell, and outbound webhook hooks at lifecycle points. Hooks can log, transform, inject context, measure activity, or block a tool call; callback failures are isolated, while control hooks can fail closed.
+
+**BeeRoom integration.** Add a narrow integration hook set for audit and guardrails: record a request ID and high-level action, reject a write without a confirmation token, attach correlation metadata to API calls, and publish non-sensitive metrics for latency and errors. A post-write event can update observability, but the BeeRoom API remains the source of truth for the result.
+
+**End-to-end flow.** Telegram message enters Hermes → a pre-tool hook checks platform identity, allowed tool, class scope, and confirmation state → the integration client calls BeeRoom → the API validates and persists → a post-tool hook records success or failure without raw student text → Hermes replies with the API result. Hook failure must never turn an unconfirmed request into a write.
+
+**Interfaces and feasibility.** Standardize a small event envelope with event type, correlation ID, actor scope, tool name, outcome, and retention classification. Keep business authorization in the API and use hooks as a second guardrail and audit signal. This is feasible and valuable once the basic toolset exists; begin with logging and pre-write blocking.
+
+**Security decision.** Do not log credentials, full message bodies, audio, or unrestricted API responses. Sign outbound events if an external audit sink is added, rate-limit retries, and make write operations idempotent. Test both hook failure and duplicate delivery so the teacher never sees a false success.
+
+Source: [Hermes Event Hooks](https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
