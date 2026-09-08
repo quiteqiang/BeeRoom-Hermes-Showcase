@@ -246,6 +246,18 @@ Source: [Hermes Event Hooks](https://hermes-agent.nousresearch.com/docs/user-gui
 
 Source: [Hermes Document Extraction](https://hermes-agent.nousresearch.com/docs/user-guide/features/document-extraction).
 
++### 12. Tool Search
+
+**Capability and business value.** Hermes can defer MCP and non-core plugin schemas and discover them progressively through search, description, and call bridge tools. This reduces prompt noise when a ClassNote deployment eventually has reporting, storage, calendar, and messaging integrations.
+
+**Proposed integration and data flow.** Keep student lookup, preview, and submit tools in a fixed allowlist; put optional read-only tools behind Tool Search: user intent → catalog search → schema description → local argument validation → approved integration client → ClassNote API or another explicitly permitted service.
+
+**Implementation boundary.** No database change is required. Maintain a tool registry with capability ID, operation type, authorization scope, and confirmation requirement. A discovered tool name must never become permission to access arbitrary data.
+
+**Risks and recommendation.** Retrieval may select the wrong tool, and newly installed plugins can expand the reachable surface. Restrict the catalog per session, keep writes non-discoverable until explicitly enabled, and audit the resolved tool name. Recommend this only when the optional toolset becomes large.
+
+Source: [Hermes Tool Search](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-search).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
