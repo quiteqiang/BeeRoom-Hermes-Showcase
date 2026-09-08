@@ -234,6 +234,18 @@ Source: [Hermes Code Execution](https://hermes-agent.nousresearch.com/docs/user-
 
 Source: [Hermes Event Hooks](https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks).
 
++### 11. Document extraction
+
+**Capability and business value.** Hermes can convert common Word, spreadsheet, notebook, and PDF files into paginated Markdown, and can warn when scanned PDF pages have no text layer. This lets teachers use existing roster exports or observation worksheets without retyping them.
+
+**Proposed integration and data flow.** Add an attachment-ingestion adapter before the existing intent layer: approved attachment → type and size validation → Hermes extraction → coverage and redaction check → structured candidate records → student lookup or comment preview → explicit confirmation → ClassNote API.
+
+**Implementation boundary.** No database change is needed initially. Add an attachment envelope with type, size, checksum, extraction status, and source reference. Keep extracted text ephemeral unless retention is explicitly requested.
+
+**Risks and recommendation.** Documents may contain unrelated personal data, hidden formulas, or unreadable scans. Enforce limits, redact unnecessary fields, and never log raw documents. Recommend a read-and-preview pilot using sanitized exports before bulk writes.
+
+Source: [Hermes Document Extraction](https://hermes-agent.nousresearch.com/docs/user-guide/features/document-extraction).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
