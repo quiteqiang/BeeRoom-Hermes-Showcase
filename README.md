@@ -354,6 +354,18 @@ Source: [Hermes Plugins](https://hermes-agent.nousresearch.com/docs/user-guide/f
 
 Source: [Hermes Batch Processing](https://hermes-agent.nousresearch.com/docs/user-guide/features/batch-processing).
 
+### 21. Voice Mode
+
+**Capability and business value.** Hermes supports voice interaction across CLI and messaging surfaces, including voice input, transcription, and optional spoken replies. For ClassNote, voice input can let a teacher capture a quick observation while moving around the classroom.
+
+**Proposed integration and data flow.** Telegram voice message → Hermes gateway receives audio → local speech-to-text produces text → Hermes extracts intent and student candidate → ClassNote preview → teacher confirms → API stores a pending comment. Keep the audio outside the business database unless retention is explicitly required.
+
+**Implementation boundary.** The existing two-table model is sufficient. Add only a transient voice-message envelope containing source, transcription status, confidence, and correlation ID; the integration layer passes text, not audio, to the business API.
+
+**Risks and recommendation.** Background noise, names, and accents can cause unsafe student matching. Require a preview, show the transcription, ask when confidence is low, and redact audio from logs. Recommend voice input as an optional convenience with the current local faster-whisper path.
+
+Source: [Hermes Voice Mode](https://hermes-agent.nousresearch.com/docs/user-guide/features/voice-mode).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
