@@ -318,6 +318,18 @@ Source: [Hermes Honcho Memory](https://hermes-agent.nousresearch.com/docs/user-g
 
 Source: [Hermes Mixture of Agents](https://hermes-agent.nousresearch.com/docs/user-guide/features/mixture-of-agents).
 
+### 18. Personality and SOUL.md
+
+**Capability and business value.** Hermes uses a durable personality file as the agent identity, with optional session-level personality presets. A consistent, calm, teacher-friendly voice can make clarification questions and confirmation prompts easier to understand.
+
+**Proposed integration and data flow.** Define a ClassNote communication style that is concise, supportive, transparent about uncertainty, and explicit about confirmation: Hermes loads the approved style → interprets the message → presents a preview or clarification → reports the API result without changing its meaning.
+
+**Implementation boundary.** No database or API change is required. Keep the approved style separate from skills and API authorization, and keep the public example free of credentials, private endpoints, and student data.
+
+**Risks and recommendation.** Personality text can be edited or misinterpreted and must never override privacy, confirmation, or API validation. Recommend a small reviewed style guide with regression examples rather than a broad persona that invents policy.
+
+Source: [Hermes Personality & SOUL.md](https://hermes-agent.nousresearch.com/docs/user-guide/features/personality).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
