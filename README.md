@@ -306,6 +306,18 @@ Source: [Hermes Memory Providers](https://hermes-agent.nousresearch.com/docs/use
 
 Source: [Hermes Honcho Memory](https://hermes-agent.nousresearch.com/docs/user-guide/features/honcho).
 
+### 17. Mixture of Agents
+
+**Capability and business value.** Hermes can use a Mixture of Agents preset in which reference models analyze first and an aggregator produces the response and tool calls while preserving the normal Hermes loop. Multiple perspectives may help with ambiguous names or mixed observations.
+
+**Proposed integration and data flow.** Route only high-ambiguity drafting and reporting to MoA: Telegram request → reference analysis → aggregator produces structured intent → read-only lookup and preview → teacher confirmation → ClassNote API write → review queue. Simple messages should use the normal path.
+
+**Implementation boundary.** No database change is required. Add routing based on ambiguity, task type, and latency budget, with a correlation ID for comparing MoA and normal-model outcomes.
+
+**Risks and recommendation.** MoA increases latency, cost, provider complexity, and draft variance. It cannot replace deterministic identity matching or confirmation. Recommend offline evaluation first, then an opt-in fallback for difficult read and preview cases.
+
+Source: [Hermes Mixture of Agents](https://hermes-agent.nousresearch.com/docs/user-guide/features/mixture-of-agents).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
