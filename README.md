@@ -234,7 +234,7 @@ Source: [Hermes Code Execution](https://hermes-agent.nousresearch.com/docs/user-
 
 Source: [Hermes Event Hooks](https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks).
 
-+### 11. Document extraction
+### 11. Document extraction
 
 **Capability and business value.** Hermes can convert common Word, spreadsheet, notebook, and PDF files into paginated Markdown, and can warn when scanned PDF pages have no text layer. This lets teachers use existing roster exports or observation worksheets without retyping them.
 
@@ -246,7 +246,7 @@ Source: [Hermes Event Hooks](https://hermes-agent.nousresearch.com/docs/user-gui
 
 Source: [Hermes Document Extraction](https://hermes-agent.nousresearch.com/docs/user-guide/features/document-extraction).
 
-+### 12. Tool Search
+### 12. Tool Search
 
 **Capability and business value.** Hermes can defer MCP and non-core plugin schemas and discover them progressively through search, description, and call bridge tools. This reduces prompt noise when a ClassNote deployment eventually has reporting, storage, calendar, and messaging integrations.
 
@@ -258,7 +258,7 @@ Source: [Hermes Document Extraction](https://hermes-agent.nousresearch.com/docs/
 
 Source: [Hermes Tool Search](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-search).
 
-+### 13. LSP semantic diagnostics
+### 13. LSP semantic diagnostics
 
 **Capability and business value.** Hermes can run language servers after file edits and report new semantic diagnostics such as type errors, unresolved names, and missing imports. This is useful for keeping the ClassNote backend, frontend, and integration client aligned.
 
@@ -270,7 +270,7 @@ Source: [Hermes Tool Search](https://hermes-agent.nousresearch.com/docs/user-gui
 
 Source: [Hermes LSP — Semantic Diagnostics](https://hermes-agent.nousresearch.com/docs/user-guide/features/lsp).
 
-+### 14. Curator
+### 14. Curator
 
 **Capability and business value.** Hermes Curator tracks use of agent-created skills, moves inactive skills through active, stale, and archived states, and proposes consolidation or drift fixes. This can prevent multiple ClassNote workflow skills from competing for context.
 
@@ -282,7 +282,7 @@ Source: [Hermes LSP — Semantic Diagnostics](https://hermes-agent.nousresearch.
 
 Source: [Hermes Curator](https://hermes-agent.nousresearch.com/docs/user-guide/features/curator).
 
-+### 15. External memory providers
+### 15. External memory providers
 
 **Capability and business value.** Hermes supports external memory-provider plugins for cross-session knowledge, background prefetching, conversation synchronization, memory extraction, and provider-specific memory tools. This could reduce repeated setup questions about a teacher’s preferred language or comment tone.
 
@@ -294,7 +294,7 @@ Source: [Hermes Curator](https://hermes-agent.nousresearch.com/docs/user-guide/f
 
 Source: [Hermes Memory Providers](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers).
 
-+### 16. Honcho Memory
+### 16. Honcho Memory
 
 **Capability and business value.** Honcho is a memory provider that builds a persistent model of user preferences, communication style, goals, and patterns, with session summaries, semantic search, conclusions, and separated peer profiles. It may improve continuity for a teacher but is unnecessary for a simple comment.
 
