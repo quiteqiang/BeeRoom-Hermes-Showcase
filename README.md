@@ -330,6 +330,18 @@ Source: [Hermes Mixture of Agents](https://hermes-agent.nousresearch.com/docs/us
 
 Source: [Hermes Personality & SOUL.md](https://hermes-agent.nousresearch.com/docs/user-guide/features/personality).
 
+### 19. Plugins
+
+**Capability and business value.** Hermes plugins add custom tools, hooks, and integrations without changing Hermes core. A ClassNote plugin can package the business boundary cleanly and keep Telegram tools separate from generic Hermes capabilities.
+
+**Proposed integration and data flow.** Register typed tools for student lookup, preview, submit, and review queue operations: Hermes loads the plugin → model selects a tool → plugin validates scope and arguments → authenticated API client calls ClassNote → API applies business rules → plugin returns a safe result.
+
+**Implementation boundary.** No database change is needed. Maintain plugin version, supported API contract, capability allowlist, and compatibility tests. Do not include credentials, operational configuration, or real endpoints in the public repository.
+
+**Risks and recommendation.** A plugin executes code inside the Hermes runtime and can become an alternate path around guardrails. Pin versions, review handlers, restrict tools by profile, and fail closed on missing authorization. Recommend this as the preferred production integration boundary once the API contract is stable.
+
+Source: [Hermes Plugins](https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
