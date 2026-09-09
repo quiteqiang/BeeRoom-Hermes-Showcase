@@ -402,6 +402,18 @@ Source: [Hermes Vision & Image Paste](https://hermes-agent.nousresearch.com/docs
 
 Source: [Hermes Image Generation](https://hermes-agent.nousresearch.com/docs/user-guide/features/image-generation).
 
+### 25. Voice and TTS
+
+**Capability and business value.** Hermes supports speech-to-text and optional text-to-speech across messaging platforms. TTS could make review reminders more accessible, but it is not required for the ClassNote workflow.
+
+**Proposed integration and data flow.** Keep incoming Telegram audio on the local STT path → Hermes produces text → ClassNote performs lookup, preview, and confirmation → return a normal text response. If spoken output is later enabled, synthesize only the short response after the API result is known; never speak an unconfirmed write as completed.
+
+**Implementation boundary.** No database change is needed. Treat STT as an input adapter and TTS as an optional presentation adapter. For this showcase, use local faster-whisper for STT and do not add a separate TTS model or credential.
+
+**Risks and recommendation.** Transcripts can misrecognize names, spoken output can be overheard, and optional providers may send content outside the private environment. Keep TTS disabled initially, display the written preview, and require explicit opt-in for any future spoken response.
+
+Source: [Hermes Voice & TTS](https://hermes-agent.nousresearch.com/docs/user-guide/features/tts).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
