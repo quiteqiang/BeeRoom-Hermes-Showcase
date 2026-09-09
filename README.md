@@ -426,6 +426,18 @@ Source: [Hermes Voice & TTS](https://hermes-agent.nousresearch.com/docs/user-gui
 
 Source: [Hermes MCP Integration](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp).
 
+### 27. Provider routing
+
+**Capability and business value.** Hermes can apply fine-grained routing rules when using a multi-provider gateway, prioritizing providers by price, latency, throughput, supported parameters, or data-collection policy. This helps separate cost and privacy decisions from application code.
+
+**Proposed integration and data flow.** Integration layer classifies the request → policy selects an approved model route → Hermes processes the intent → ClassNote receives only the structured, validated operation. Sensitive student observations should use a route that satisfies the organization’s data policy; routing must not be decided by free-form user text.
+
+**Implementation boundary.** No database change is needed. Keep routing policy in private runtime configuration and expose only a provider-neutral capability to the ClassNote adapter. The public repository documents the policy shape without real endpoints or credentials.
+
+**Risks and recommendation.** Different providers may change quality, retention, latency, or tool support, and routing can be ignored on some provider paths. Pin approved routes, record policy version and correlation ID, and evaluate identity accuracy per route. Recommend routing only after privacy and quality requirements are explicit.
+
+Source: [Hermes Provider Routing](https://hermes-agent.nousresearch.com/docs/user-guide/features/provider-routing).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
