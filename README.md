@@ -414,6 +414,18 @@ Source: [Hermes Image Generation](https://hermes-agent.nousresearch.com/docs/use
 
 Source: [Hermes Voice & TTS](https://hermes-agent.nousresearch.com/docs/user-guide/features/tts).
 
+### 26. MCP integration
+
+**Capability and business value.** Hermes can connect to local or remote Model Context Protocol servers, discover their tools, and apply per-server filtering. This could connect ClassNote to an approved external roster, calendar, or reporting system without adding each integration to Hermes core.
+
+**Proposed integration and data flow.** Teacher requests an approved external action → Hermes selects a filtered MCP capability → integration policy validates the operation and scope → external result is normalized → ClassNote preview or report is generated → any write still requires confirmation and API validation.
+
+**Implementation boundary.** Prefer a narrow ClassNote API or plugin for core student and comment operations. Use MCP only for external read-heavy systems, with typed adapters and no direct database access. No ClassNote schema change is required initially.
+
+**Risks and recommendation.** MCP servers can introduce credentials, remote execution, schema drift, and unexpected data exposure. Allowlist servers and tools per profile, keep write tools disabled by default, and review every server version. Recommend MCP for optional external integrations, not the core comment path.
+
+Source: [Hermes MCP Integration](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
