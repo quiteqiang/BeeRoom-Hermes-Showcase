@@ -438,6 +438,18 @@ Source: [Hermes MCP Integration](https://hermes-agent.nousresearch.com/docs/user
 
 Source: [Hermes Provider Routing](https://hermes-agent.nousresearch.com/docs/user-guide/features/provider-routing).
 
+### 28. Fallback providers
+
+**Capability and business value.** Hermes can switch to a backup provider and model when the primary fails, while preserving conversation history and tool context. This may keep a teacher’s request available during a transient provider outage.
+
+**Proposed integration and data flow.** Telegram request → primary Hermes model → transient failure detected → approved fallback selected → intent and preview continue → ClassNote API validates → teacher confirms → pending comment is stored. A fallback must not bypass the same tool and confirmation rules.
+
+**Implementation boundary.** No database change is required. Define a private fallback policy with allowed providers, supported tools, privacy classification, and maximum retry time. For student content, use only providers that meet the data policy; otherwise return a safe retry message.
+
+**Risks and recommendation.** Fallback can send classroom content to a different processor and can produce a different interpretation. It also resets provider-side prompt-cache assumptions. Recommend fallback for availability only after provider equivalence, privacy, and ambiguous-name tests pass; never fail over into an unapproved route.
+
+Source: [Hermes Fallback Providers](https://hermes-agent.nousresearch.com/docs/user-guide/features/fallback-providers).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
