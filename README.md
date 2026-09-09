@@ -378,6 +378,18 @@ Source: [Hermes Voice Mode](https://hermes-agent.nousresearch.com/docs/user-guid
 
 Source: [Hermes Browser Automation](https://hermes-agent.nousresearch.com/docs/user-guide/features/browser).
 
+### 23. Vision and image paste
+
+**Capability and business value.** Hermes can accept pasted images and send them to a vision-capable model for analysis. A teacher might use this to inspect a photographed observation sheet, handwritten note, or classroom artifact.
+
+**Proposed integration and data flow.** Teacher attaches an image → Hermes performs vision analysis → integration layer extracts only the intended observation and candidate student → ClassNote returns a preview → teacher confirms → pending comment is stored. The original image should expire unless the teacher explicitly retains it.
+
+**Implementation boundary.** No student or comment schema change is required. Use a temporary attachment object with size, checksum, redaction status, and extraction confidence; send structured text to the API rather than image content.
+
+**Risks and recommendation.** Images may reveal faces, names, handwriting, or unrelated children, and vision can misread text. Require a clear subject, mask unrelated regions, display extracted text for review, and block low-confidence writes. Recommend a limited pilot with synthetic or teacher-created materials.
+
+Source: [Hermes Vision & Image Paste](https://hermes-agent.nousresearch.com/docs/user-guide/features/vision).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
