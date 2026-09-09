@@ -366,6 +366,18 @@ Source: [Hermes Batch Processing](https://hermes-agent.nousresearch.com/docs/use
 
 Source: [Hermes Voice Mode](https://hermes-agent.nousresearch.com/docs/user-guide/features/voice-mode).
 
+### 22. Browser Automation
+
+**Capability and business value.** Hermes can navigate websites, interact with page elements, fill forms, and extract information through local or cloud browser backends. This could help import a teacher-selected roster or inspect a report from an approved education system.
+
+**Proposed integration and data flow.** Teacher explicitly requests an import → Hermes opens an allowlisted site → extracts a bounded table → integration layer validates and redacts fields → ClassNote previews proposed student changes → teacher confirms → API persists only approved records. Browser automation must not be the normal path for adding comments.
+
+**Implementation boundary.** Keep browser credentials and sessions in Hermes or the private integration layer. Add a structured import contract with source label, checksum, column mapping, and review status; do not let browser code access the database directly.
+
+**Risks and recommendation.** Pages change, sessions may contain sensitive data, and cloud browsing adds a third-party privacy boundary. Prefer an official export or API, use local browser mode only when necessary, and require human review. Recommend this as a controlled import fallback, not a core ClassNote dependency.
+
+Source: [Hermes Browser Automation](https://hermes-agent.nousresearch.com/docs/user-guide/features/browser).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
