@@ -462,6 +462,18 @@ Source: [Hermes Fallback Providers](https://hermes-agent.nousresearch.com/docs/u
 
 Source: [Hermes Credential Pools](https://hermes-agent.nousresearch.com/docs/user-guide/features/credential-pools).
 
+### 30. API Server
+
+**Capability and business value.** Hermes can expose an OpenAI-compatible HTTP interface, allowing a web client to use Hermes as a model-and-tools backend. This could provide a second conversational entry point beside Telegram.
+
+**Proposed integration and data flow.** ClassNote web interface sends a message to the private Hermes API → Hermes interprets intent and calls the approved integration tool → ClassNote API validates lookup, preview, and confirmation → the web interface renders the result. Telegram and web sessions must share the same business rules, not necessarily the same conversation history.
+
+**Implementation boundary.** Keep the public ClassNote API as the business data boundary and treat Hermes API Server as an orchestration boundary. Add authentication, tenant context, request limits, streaming/error contracts, and explicit tool allowlists before connecting the frontend. No public server address or credential belongs in this repository.
+
+**Risks and recommendation.** An HTTP endpoint expands attack surface, can expose tool progress, and may be mistaken for direct database access. Place it behind authentication and network controls, avoid client-side secrets, and require confirmation for writes. Recommend it later for a controlled web assistant, while Telegram remains the initial channel.
+
+Source: [Hermes API Server](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
