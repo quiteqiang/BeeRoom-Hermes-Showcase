@@ -450,6 +450,18 @@ Source: [Hermes Provider Routing](https://hermes-agent.nousresearch.com/docs/use
 
 Source: [Hermes Fallback Providers](https://hermes-agent.nousresearch.com/docs/user-guide/features/fallback-providers).
 
+### 29. Credential pools
+
+**Capability and business value.** Hermes can rotate among multiple credentials for the same provider when rate limits or quotas are reached. This is an operational resilience feature, not a business-data feature.
+
+**Proposed integration and data flow.** Request enters Hermes → private credential manager chooses a healthy credential → model produces intent or preview → ClassNote API validates the result. If all credentials are exhausted, the system returns a controlled unavailable response rather than exposing credentials or silently changing data policy.
+
+**Implementation boundary.** No ClassNote database change is required. Store credentials only in the private Hermes runtime or secret manager; the public repository contains no key names with values, credential files, or operational setup. The integration layer sees only a provider result and correlation ID.
+
+**Risks and recommendation.** Rotation can complicate auditing, reset provider-side cache benefits, and make quota ownership unclear. Track provider and policy metadata without logging secrets, set per-tenant budgets, and keep the pool separate from student records. Recommend this only for a managed deployment with multiple approved credentials.
+
+Source: [Hermes Credential Pools](https://hermes-agent.nousresearch.com/docs/user-guide/features/credential-pools).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
