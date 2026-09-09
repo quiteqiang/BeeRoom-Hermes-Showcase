@@ -390,6 +390,18 @@ Source: [Hermes Browser Automation](https://hermes-agent.nousresearch.com/docs/u
 
 Source: [Hermes Vision & Image Paste](https://hermes-agent.nousresearch.com/docs/user-guide/features/vision).
 
+### 24. Image Generation
+
+**Capability and business value.** Hermes can generate images from text prompts through supported image-generation backends. For ClassNote, the safe value is creating neutral dashboard illustrations, classroom workflow diagrams, or visual assets for training material.
+
+**Proposed integration and data flow.** Teacher or maintainer requests an illustration → Hermes generates an image → frontend asset review checks accessibility and appropriateness → approved asset is stored with the showcase or private web app. Generated images should not represent real students or infer student performance.
+
+**Implementation boundary.** This is a frontend and content workflow, not a student-data operation. No database change is required. Keep generated assets separate from student comments and do not send private classroom records into image prompts.
+
+**Risks and recommendation.** Prompts can accidentally disclose personal information, generated imagery can be misleading, and provider usage can have cost or retention implications. Use synthetic prompts, review outputs, and keep the feature disabled in the comment-writing toolset. Recommend it only for documentation and neutral UI assets.
+
+Source: [Hermes Image Generation](https://hermes-agent.nousresearch.com/docs/user-guide/features/image-generation).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
