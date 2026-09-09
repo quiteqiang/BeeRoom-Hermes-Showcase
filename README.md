@@ -342,6 +342,18 @@ Source: [Hermes Personality & SOUL.md](https://hermes-agent.nousresearch.com/doc
 
 Source: [Hermes Plugins](https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins).
 
+### 20. Batch processing
+
+**Capability and business value.** Hermes batch processing runs many isolated agent sessions over a JSONL prompt dataset and produces structured trajectories, tool-call statistics, and evaluation metrics. ClassNote can use it to test natural-language understanding against synthetic classroom messages.
+
+**Proposed integration and data flow.** Synthetic prompt dataset → isolated Hermes sessions → mocked or read-only ClassNote tools → structured trajectories → evaluator measures intent accuracy, ambiguity handling, and unsafe-write rate → approved skill or prompt changes.
+
+**Implementation boundary.** No production database change is required. Add an offline evaluation harness and versioned synthetic fixtures if needed; never use real student records or credentials in a batch dataset.
+
+**Risks and recommendation.** Parallel runs can create cost, rate-limit pressure, and misleading results if the corpus lacks realistic ambiguity. Cap concurrency, track model and provider versions, and require human review for safety metrics. Recommend batch processing as a quality gate, not a production write mechanism.
+
+Source: [Hermes Batch Processing](https://hermes-agent.nousresearch.com/docs/user-guide/features/batch-processing).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
