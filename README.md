@@ -546,6 +546,18 @@ Source: [Hermes Deliverable Mode](https://hermes-agent.nousresearch.com/docs/use
 
 Source: [Hermes Nous Tool Gateway](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-gateway).
 
+### 37. ACP Host Integration
+
+**Capability and business value.** Hermes can run as an Agent Client Protocol server over standard input and output, allowing an ACP-compatible editor or host to own the conversation surface while Hermes retains its tools, memory, skills, and identity.
+
+**Proposed integration and data flow.** Maintainer opens an ACP host → host sends a ClassNote integration task → Hermes calls approved read-only tools → host renders progress, diffs, and approval prompts → maintainer reviews changes. This is useful for maintaining the integration code, not for bypassing the teacher-facing review workflow.
+
+**Implementation boundary.** No student or comment schema change is required. Exclude messaging delivery and cron controls from the ACP toolset, and use the same API client and allowlist as Telegram. Keep stdio transport and host-specific setup out of the public deployment configuration.
+
+**Risks and recommendation.** ACP hosts may expose file, terminal, or approval capabilities beyond the business need. Restrict the host profile, require explicit approval for writes, and never pass production student data into a coding session. Recommend ACP for engineering and support workflows only.
+
+Source: [Hermes ACP Host Integration](https://hermes-agent.nousresearch.com/docs/user-guide/features/acp).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
