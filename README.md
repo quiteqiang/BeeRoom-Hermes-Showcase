@@ -510,6 +510,18 @@ Source: [Hermes Web Search & Extract](https://hermes-agent.nousresearch.com/docs
 
 Source: [Hermes X Search](https://hermes-agent.nousresearch.com/docs/user-guide/features/x-search).
 
+### 34. Computer Use
+
+**Capability and business value.** Hermes can drive a desktop in the background through accessibility and input tooling. This could help a maintainer perform a repetitive import from a legacy application when no export or API exists.
+
+**Proposed integration and data flow.** Maintainer explicitly starts an import → Hermes reads the approved application view → extracts a bounded table → integration layer validates and redacts fields → ClassNote shows an import preview → maintainer confirms → API persists approved records.
+
+**Implementation boundary.** Computer Use must remain outside the normal teacher-facing toolset and must never receive direct database access. Add an import job envelope with source, field mapping, checksum, and reviewer identity; no core schema change is required for a first pilot.
+
+**Risks and recommendation.** UI automation can click the wrong control, expose private screens, or become unreliable after an interface change. Use a dedicated account, visible progress, strict domain and window allowlists, and mandatory review. Recommend official exports or APIs first, with Computer Use only as a controlled fallback.
+
+Source: [Hermes Computer Use](https://hermes-agent.nousresearch.com/docs/user-guide/features/computer-use).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
