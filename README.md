@@ -498,6 +498,18 @@ Source: [Hermes Wake Word](https://hermes-agent.nousresearch.com/docs/user-guide
 
 Source: [Hermes Web Search & Extract](https://hermes-agent.nousresearch.com/docs/user-guide/features/web-search).
 
+### 33. X Search
+
+**Capability and business value.** Hermes can search public X posts, profiles, and threads for current discussions and claims. It could support trend or resource research, but it has little direct value for storing classroom comments.
+
+**Proposed integration and data flow.** Teacher requests public topic research → Hermes performs read-only X discovery → integration layer strips unrelated content and source metadata → Hermes returns a cited summary. No X result should identify a student, determine a safeguarding decision, or trigger a ClassNote write.
+
+**Implementation boundary.** Keep X Search as an optional research tool with no ClassNote database or API mutation path. If exact authenticated X actions are ever needed, isolate them in a separate reviewed integration; public search must not be treated as proof that an external action occurred.
+
+**Risks and recommendation.** Content may be unreliable, sensitive, or personal, and platform access may require separate authentication. Use it only for public, non-student research and display source links. Recommend excluding it from the default teacher comment workflow.
+
+Source: [Hermes X Search](https://hermes-agent.nousresearch.com/docs/user-guide/features/x-search).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
