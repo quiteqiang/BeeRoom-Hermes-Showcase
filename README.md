@@ -558,6 +558,18 @@ Source: [Hermes Nous Tool Gateway](https://hermes-agent.nousresearch.com/docs/us
 
 Source: [Hermes ACP Host Integration](https://hermes-agent.nousresearch.com/docs/user-guide/features/acp).
 
+### 38. Skins and Themes
+
+**Capability and business value.** Hermes skins control CLI visual presentation such as colors, labels, branding text, and activity prefixes, while personality controls conversational wording. A consistent visual identity can help a maintainer distinguish ClassNote workflows during development.
+
+**Proposed integration and data flow.** User selects a reviewed ClassNote-oriented skin → Hermes renders status and tool activity consistently → the teacher still receives normal business previews and confirmations. Skin changes must not affect intent extraction, authorization, or API behavior.
+
+**Implementation boundary.** No database or API change is required. Keep skin files as presentation assets, separate from skills, credentials, and business policy. The public showcase may include a neutral example but should not expose private branding or operational paths.
+
+**Risks and recommendation.** Visual branding can imply capabilities or obscure warnings if colors and labels are poorly chosen. Preserve clear error and confirmation states, test accessibility, and keep all safety text independent of theme styling. Recommend this only as a developer-experience improvement.
+
+Source: [Hermes Skins & Themes](https://hermes-agent.nousresearch.com/docs/user-guide/features/skins).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
