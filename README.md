@@ -522,6 +522,18 @@ Source: [Hermes X Search](https://hermes-agent.nousresearch.com/docs/user-guide/
 
 Source: [Hermes Computer Use](https://hermes-agent.nousresearch.com/docs/user-guide/features/computer-use).
 
+### 35. Deliverable Mode
+
+**Capability and business value.** Hermes can deliver generated files as native messaging attachments instead of exposing paths for the user to copy. This is useful for sending a class summary, CSV export, or reviewed PDF through an approved channel.
+
+**Proposed integration and data flow.** Teacher requests a report → ClassNote reporting API returns bounded data → Hermes creates a sanitized artifact → gateway validates supported file type → teacher receives the attachment → no write is implied by delivery.
+
+**Implementation boundary.** Add a report-export contract with scope, format, retention, and redaction status. Keep artifacts separate from the student and comment tables, use temporary storage with expiration, and require the same authorization as the underlying report.
+
+**Risks and recommendation.** Attachments can leak student data through the wrong channel or remain in platform history. Limit recipients, watermark or label sensitive reports, avoid raw tool paths in visible messages, and require confirmation before generating a student-level export. Recommend this for reviewed reports, not automatic daily delivery by default.
+
+Source: [Hermes Deliverable Mode](https://hermes-agent.nousresearch.com/docs/user-guide/features/deliverable-mode).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
