@@ -570,6 +570,18 @@ Source: [Hermes ACP Host Integration](https://hermes-agent.nousresearch.com/docs
 
 Source: [Hermes Skins & Themes](https://hermes-agent.nousresearch.com/docs/user-guide/features/skins).
 
+### 39. Session Search
+
+**Capability and business value.** Hermes stores conversations as sessions and can search past messages with full-text search, allowing the agent to recall prior discussions without making an additional model call. This could help a teacher find an earlier draft or understand what was already reviewed.
+
+**Proposed integration and data flow.** Teacher asks about a previous interaction → Hermes searches the scoped session history → returns a bounded reference or summary → integration layer verifies current student and class permissions → teacher starts a new preview if a comment action is requested. Historical text must not be treated as current database state.
+
+**Implementation boundary.** Keep Hermes session storage separate from the two ClassNote tables. Add a correlation link only if the API later needs to associate a confirmed comment with a conversation, and store a non-sensitive reference rather than duplicating full transcripts.
+
+**Risks and recommendation.** Old messages can contain stale names, deleted records, or sensitive text from another context. Scope search by teacher and class, apply retention and deletion policies, and require fresh API lookup before any write. Recommend it for recall and audit assistance, not automatic mutation.
+
+Source: [Hermes Sessions and Session Search](https://hermes-agent.nousresearch.com/docs/user-guide/sessions/).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
