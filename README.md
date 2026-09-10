@@ -582,6 +582,18 @@ Source: [Hermes Skins & Themes](https://hermes-agent.nousresearch.com/docs/user-
 
 Source: [Hermes Sessions and Session Search](https://hermes-agent.nousresearch.com/docs/user-guide/sessions/).
 
+### 40. Hermes Web Dashboard
+
+**Capability and business value.** Hermes provides a browser-based dashboard for managing settings, monitoring sessions, and operating the agent without relying solely on CLI commands. A controlled dashboard could help maintainers inspect integration health and review Hermes activity.
+
+**Proposed integration and data flow.** Maintainer authenticates to the private dashboard → selects the intended Hermes profile → inspects gateway, session, or tool status → opens the ClassNote web interface for business data → ClassNote API enforces teacher access and review rules. Hermes dashboard management must remain separate from student records.
+
+**Implementation boundary.** Do not expose the Hermes management dashboard as the public ClassNote frontend. If a future integration adds a status panel, use a narrow read-only health contract and separate authentication; no student or comment schema change is required.
+
+**Risks and recommendation.** A management dashboard can expose API keys, session history, tool activity, or multiple profiles if deployed carelessly. Keep it private, require authentication for non-local access, avoid operational addresses in documentation, and never use it as the teacher’s comment-review authorization layer. Recommend it for administrators and maintainers only.
+
+Source: [Hermes Web Dashboard](https://hermes-agent.nousresearch.com/docs/user-guide/features/web-dashboard).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
