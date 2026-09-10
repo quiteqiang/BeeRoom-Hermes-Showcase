@@ -474,6 +474,18 @@ Source: [Hermes Credential Pools](https://hermes-agent.nousresearch.com/docs/use
 
 Source: [Hermes API Server](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server).
 
+### 31. Wake Word
+
+**Capability and business value.** Hermes supports on-device wake-word detection for hands-free voice sessions on local surfaces. For ClassNote, a teacher could start an observation without touching the keyboard, while the detector keeps audio local until a command is spoken.
+
+**Proposed integration and data flow.** Wake phrase → voice capture → local STT → Hermes intent extraction → student lookup and preview → explicit confirmation → ClassNote API stores a pending comment. The wake detector is only an input trigger; it must not bypass preview or authorization.
+
+**Implementation boundary.** No database change is required. Keep wake state and audio transient, pass only the transcription and correlation ID to the integration layer, and preserve the current local faster-whisper path.
+
+**Risks and recommendation.** Ambient speech can cause false triggers, and names may be transcribed incorrectly. Require visible confirmation, show the transcription, and keep the feature opt-in. Recommend it as a later hands-free enhancement for trusted local devices, not for the Telegram gateway.
+
+Source: [Hermes Wake Word](https://hermes-agent.nousresearch.com/docs/user-guide/features/wake-word).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
