@@ -534,6 +534,18 @@ Source: [Hermes Computer Use](https://hermes-agent.nousresearch.com/docs/user-gu
 
 Source: [Hermes Deliverable Mode](https://hermes-agent.nousresearch.com/docs/user-guide/features/deliverable-mode).
 
+### 36. Nous Tool Gateway
+
+**Capability and business value.** Hermes can route optional web, image, speech, and browser tool calls through a managed tool gateway, reducing the number of separate provider integrations an operator must maintain. It can simplify a future ClassNote deployment’s operational surface.
+
+**Proposed integration and data flow.** Hermes selects an approved capability → the gateway processes only the requested media or research operation → the integration layer receives a normalized result → ClassNote handles student lookup, preview, and persistence. The gateway must not become a direct path to the ClassNote database.
+
+**Implementation boundary.** Keep gateway selection in private Hermes runtime configuration. No ClassNote schema change is needed. The public repository should document provider-neutral behavior and retain the local faster-whisper decision for incoming voice transcription.
+
+**Risks and recommendation.** A managed gateway adds vendor dependency, data-processing questions, and possible usage costs. ClassNote should classify each operation by sensitivity, avoid sending student records to optional media tools, and keep a local or disabled fallback. Recommend it for non-sensitive auxiliary tools, not as a requirement for core comment writes.
+
+Source: [Hermes Nous Tool Gateway](https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-gateway).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
