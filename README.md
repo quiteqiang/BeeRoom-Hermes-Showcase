@@ -486,6 +486,18 @@ Source: [Hermes API Server](https://hermes-agent.nousresearch.com/docs/user-guid
 
 Source: [Hermes Wake Word](https://hermes-agent.nousresearch.com/docs/user-guide/features/wake-word).
 
+### 32. Web Search and Extract
+
+**Capability and business value.** Hermes provides web search and page extraction tools backed by configurable providers. This can help a teacher or maintainer research curriculum references or prepare a general classroom resource alongside ClassNote.
+
+**Proposed integration and data flow.** User asks for external research → Hermes searches and extracts public pages → integration layer separates external research from student records → Hermes drafts a resource or explanation → the frontend displays it. Web results should never be used as evidence for student identity or automatically written as a comment.
+
+**Implementation boundary.** Keep web tools outside the core ClassNote write toolset. No database change is required. If citations are retained, store them as optional report metadata rather than mixing them into the two core tables.
+
+**Risks and recommendation.** Results can be inaccurate, stale, copyrighted, or contaminated by prompt injection. Restrict domains when possible, show citations, treat page content as untrusted, and never send private student details into a search query. Recommend this for educational research, not comment generation.
+
+Source: [Hermes Web Search & Extract](https://hermes-agent.nousresearch.com/docs/user-guide/features/web-search).
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
