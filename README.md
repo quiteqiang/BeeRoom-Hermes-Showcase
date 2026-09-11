@@ -651,6 +651,25 @@ Hermes can run multiple gateway processes or containers, each associated with a 
 
 This is a runtime and deployment pattern, not a schema change. Token collisions, wrong-profile routing, resource contention, and inconsistent skill versions are the main failure modes. The MVP should use one gateway; add multiple gateways only for a clear separation of roles, environments, or operational ownership.
 
+### 44. Connecting Desktop to Many Hermes Instances
+
+Hermes Desktop can register multiple local, remote, SSH, or hosted Hermes gateways and use them side by side ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/multi-connection-desktop)). Connections are named and persistent, so an operator can switch between instances without mixing their sessions.
+
+**ClassNote integration idea**
+
+- Offer maintainers separate labeled connections for local development, staging, and the approved classroom runtime.
+- Display the connection name and environment prominently before showing or mutating the ClassNote review queue.
+- Keep student and comment operations behind the ClassNote API; the desktop connection should be an operator interface, not a direct database channel.
+- Restrict mutation tools by role and require the same confirmation policy used by Telegram.
+
+**Flow**
+
+`operator selects labeled connection → Hermes instance/profile → ClassNote API → dashboard or response`
+
+**Boundary and risks**
+
+Multi-connection support is an operator convenience and does not change the data model. The primary risks are selecting the wrong instance, exposing session lists, and using an unauthenticated remote endpoint. Make environment labels explicit, enforce authentication, and keep operational addresses and connection details out of the public showcase.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
