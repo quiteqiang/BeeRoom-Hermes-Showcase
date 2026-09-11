@@ -613,6 +613,25 @@ Hermes profiles provide independent agent environments, each with its own config
 
 This changes Hermes runtime organization, not the two-table database schema. A profile does not by itself sandbox terminal access, so it must not be treated as the complete security boundary. Shared tokens, unclear profile labels, or stale profile context could route a request to the wrong environment. Start with one classroom profile for the MVP and add more only when role or environment isolation is needed.
 
+### 42. Profile Distributions: Share a Whole Agent
+
+Hermes profile distributions package a complete agent setup—personality, skills, cron jobs, MCP definitions, and configuration—as a versioned repository that others can install or update ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/profile-distributions)). Recipient-specific memories, sessions, and API keys stay local.
+
+**ClassNote integration idea**
+
+- Publish a sanitized ClassNote distribution containing the agent persona, natural-language intent rules, tool definitions, review policy, and example workflows.
+- Keep all credentials, student records, session history, and deployment settings outside the distribution.
+- Version the distribution so changes to the assistant behavior can be reviewed and rolled back independently from the backend.
+- On installation, the operator supplies local authentication and maps the tools to the chosen ClassNote API environment.
+
+**Flow**
+
+`reviewed distribution → local Hermes profile → local credentials/configuration → ClassNote API`
+
+**Boundary and risks**
+
+This is a repeatable packaging and onboarding mechanism; it does not change the database schema or transfer student data. Unreviewed instructions, stale API contracts, or hidden environment assumptions could change agent behavior. Use reviewed, pinned versions and a setup checklist that explicitly separates public behavior files from private runtime configuration.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
