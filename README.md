@@ -766,6 +766,25 @@ Hermes’s web dashboard supports drop-in themes, UI plugins, and backend plugin
 
 Dashboard plugins extend an administrative surface, so they must not bypass API auth, leak session data, or trust browser-supplied student identifiers. Plugin JavaScript, CSS, and backend dependencies require review and versioning. This is a later operator experience improvement, not a prerequisite for Telegram-based capture.
 
+### 50. Built-in Plugins
+
+Hermes ships repository-maintained plugins that use the same hooks, tools, and slash-command surface as third-party plugins. They are discovered automatically but remain opt-in until explicitly enabled ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/features/built-in-plugins)).
+
+**ClassNote integration idea**
+
+- Enable only reviewed built-ins that support the ClassNote workflow, such as controlled cleanup, context handling, or operator utilities.
+- Keep the ClassNote integration as a narrow custom skill/plugin or tool contract rather than modifying Hermes core.
+- Maintain an allowlist of enabled capabilities per profile and review every plugin’s filesystem, network, and credential requirements.
+- Pin the Hermes version and test plugin behavior against the ClassNote API contract before upgrading.
+
+**Flow**
+
+`reviewed plugin selection → Hermes profile toolset → validated ClassNote operation → API authorization`
+
+**Boundary and risks**
+
+Built-in does not mean risk-free: enabling a plugin expands the agent’s tool surface and may add dependencies or credentials. Plugin discovery precedence can also replace a bundled plugin with a user or project plugin of the same name. Keep enablement explicit, audit changes, and ensure the public showcase contains no plugin secrets, local paths, or deployment configuration.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
