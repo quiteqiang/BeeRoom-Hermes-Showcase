@@ -670,6 +670,25 @@ Hermes Desktop can register multiple local, remote, SSH, or hosted Hermes gatewa
 
 Multi-connection support is an operator convenience and does not change the data model. The primary risks are selecting the wrong instance, exposing session lists, and using an unauthenticated remote endpoint. Make environment labels explicit, enforce authentication, and keep operational addresses and connection details out of the public showcase.
 
+### 45. Git Worktrees
+
+Hermes can create isolated Git worktrees so parallel agent sessions each receive their own branch and working directory ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/git-worktrees)). This prevents concurrent changes from interfering with one another and gives each session independent checkpoint history.
+
+**ClassNote integration idea**
+
+- Use a dedicated worktree for each ClassNote feature or documentation experiment.
+- Let Hermes inspect and test an isolated change, then review the diff before it reaches the shared integration branch.
+- Keep application tests and API contract checks in the worktree workflow; merge only reviewed changes.
+- Treat worktrees as a maintainer workflow, not as a runtime feature for teachers or students.
+
+**Flow**
+
+`task branch/worktree → Hermes session → tests and review → approved integration branch`
+
+**Boundary and risks**
+
+Worktrees affect source-control isolation only; they do not isolate production data, credentials, or API permissions. Stale worktrees, copied private files, and accidental commits of local configuration remain possible. Add ignore rules, secret scanning, and cleanup guidance to the development workflow.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
