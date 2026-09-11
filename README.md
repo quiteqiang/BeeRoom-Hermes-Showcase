@@ -747,6 +747,25 @@ Hermes’s subscription proxy is a local OpenAI-compatible HTTP endpoint that le
 
 The proxy provides inference, not tool execution or backend authorization. It can increase privacy, cost, and availability concerns if student content is sent to an upstream provider. Keep it loopback/private, review data-retention policy, and exclude all proxy URLs, tokens, and account configuration from the showcase.
 
+### 49. Extending the Dashboard
+
+Hermes’s web dashboard supports drop-in themes, UI plugins, and backend plugins. A UI plugin can add or replace tabs, while a backend plugin can expose a FastAPI router under a plugin API namespace ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/features/extending-the-dashboard)).
+
+**ClassNote integration idea**
+
+- Add a later admin-only “ClassNote Review” tab that displays pending comments and student lookup results through the ClassNote API.
+- Keep the first version read-only; a write action should reuse the same confirmation, authorization, and audit path as Telegram.
+- Use a plugin backend only as a thin adapter. It should not open the database directly or duplicate ClassNote business rules.
+- Use a neutral theme or a clearly labeled plugin so operators can distinguish the ClassNote view from Hermes system controls.
+
+**Flow**
+
+`dashboard plugin → authenticated ClassNote API → review queue or controlled mutation`
+
+**Boundary and risks**
+
+Dashboard plugins extend an administrative surface, so they must not bypass API auth, leak session data, or trust browser-supplied student identifiers. Plugin JavaScript, CSS, and backend dependencies require review and versioning. This is a later operator experience improvement, not a prerequisite for Telegram-based capture.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
