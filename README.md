@@ -689,6 +689,25 @@ Hermes can create isolated Git worktrees so parallel agent sessions each receive
 
 Worktrees affect source-control isolation only; they do not isolate production data, credentials, or API permissions. Stale worktrees, copied private files, and accidental commits of local configuration remain possible. Add ignore rules, secret scanning, and cleanup guidance to the development workflow.
 
+### 46. Hermes Docker Setup
+
+Hermes can run inside a container, or run on the host while using Docker as a persistent terminal sandbox. In the container mode, configuration, sessions, skills, memories, and credentials live in a mounted data directory while the image remains replaceable ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/docker)).
+
+**ClassNote integration idea**
+
+- Run the Hermes gateway in a least-privilege container and expose only the ClassNote API capability it needs.
+- Keep the two-table database behind the backend API; do not mount the database file into Hermes.
+- Use an allowlisted network path, read-only mounts where possible, pinned images, and a separate private runtime store for credentials.
+- Keep container manifests, host paths, tokens, and deployment addresses out of the public showcase.
+
+**Flow**
+
+`Telegram → containerized Hermes → allowlisted ClassNote API → database`
+
+**Boundary and risks**
+
+Docker is an operational isolation layer, not a replacement for API authorization or input validation. Over-broad mounts, unrestricted egress, image drift, or leaked environment variables can defeat the intended boundary. Start with a read-only tool set and add write operations only after the confirmation and audit path is tested.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
