@@ -594,6 +594,25 @@ Source: [Hermes Sessions and Session Search](https://hermes-agent.nousresearch.c
 
 Source: [Hermes Web Dashboard](https://hermes-agent.nousresearch.com/docs/user-guide/features/web-dashboard).
 
+### 41. Profiles: Running Multiple Agents
+
+Hermes profiles provide independent agent environments, each with its own configuration, credentials, memory, sessions, skills, and gateway state ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/profiles)). This is useful when one Hermes installation needs separate classroom and administration assistants.
+
+**ClassNote integration idea**
+
+- Route each Telegram or desktop entry point to a named Hermes profile.
+- Give the classroom profile only the ClassNote tools it needs: student lookup, comment drafting, review-queue submission, and read-only reporting.
+- Keep an administration or testing profile separate so its memories and sessions cannot influence classroom conversations.
+- Treat the profile as an agent-state boundary, while ClassNote API authorization remains the authoritative tenant and role boundary.
+
+**Flow**
+
+`message → selected Hermes profile → ClassNote skill/tool contract → authenticated ClassNote API → response`
+
+**Boundary and risks**
+
+This changes Hermes runtime organization, not the two-table database schema. A profile does not by itself sandbox terminal access, so it must not be treated as the complete security boundary. Shared tokens, unclear profile labels, or stale profile context could route a request to the wrong environment. Start with one classroom profile for the MVP and add more only when role or environment isolation is needed.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
