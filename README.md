@@ -728,6 +728,25 @@ Hermes documents a defense-in-depth model covering user authorization, dangerous
 
 Security is layered across Telegram, Hermes, the API, and the database. Prompt injection, ambiguous student names, over-broad tools, leaked credentials, and unsafe mounts are residual risks. The public showcase should document policies and interfaces only, never operational secrets or private deployment settings.
 
+### 48. Subscription Proxy
+
+Hermes’s subscription proxy is a local OpenAI-compatible HTTP endpoint that lets another application use a Hermes-managed provider subscription. It forwards raw model inference and refreshes the upstream credential; it is distinct from the Hermes API server, which exposes the full agent, tools, and memory ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/features/subscription-proxy)).
+
+**ClassNote integration idea**
+
+- Keep the proxy as an optional model-provider mechanism for development or internal experiments, not as the ClassNote business API.
+- If Hermes needs natural-language understanding, the agent should still call the narrow ClassNote tools and return validated arguments; the proxy must never receive direct database credentials.
+- Prefer local STT and the existing approved model path for the MVP; do not add a second TTS or model service just because the proxy exists.
+- Store subscription authentication only in the private Hermes runtime and document provider policy separately from this public repository.
+
+**Flow**
+
+`Hermes agent → optional local subscription proxy → model inference → validated ClassNote tool call → API`
+
+**Boundary and risks**
+
+The proxy provides inference, not tool execution or backend authorization. It can increase privacy, cost, and availability concerns if student content is sent to an upstream provider. Keep it loopback/private, review data-retention policy, and exclude all proxy URLs, tokens, and account configuration from the showcase.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
