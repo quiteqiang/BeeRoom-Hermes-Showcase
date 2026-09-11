@@ -708,6 +708,26 @@ Hermes can run inside a container, or run on the host while using Docker as a pe
 
 Docker is an operational isolation layer, not a replacement for API authorization or input validation. Over-broad mounts, unrestricted egress, image drift, or leaked environment variables can defeat the intended boundary. Start with a read-only tool set and add write operations only after the confirmation and audit path is tested.
 
+### 47. Security
+
+Hermes documents a defense-in-depth model covering user authorization, dangerous-command approval, file-write safety, container isolation, MCP credential filtering, context-file scanning, cross-session isolation, and input sanitization ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/security)).
+
+**ClassNote integration idea**
+
+- Allow Telegram access only for approved users or paired accounts before any ClassNote tool is available.
+- Expose narrow tools such as `find_student`, `draft_comment`, and `submit_for_review`; never expose arbitrary SQL or unrestricted shell access.
+- Make write actions explicit: the agent drafts a comment, shows the resolved student and text, then requires confirmation before submission.
+- Enforce tenant, role, and record authorization in the ClassNote API, because Hermes controls are not a substitute for backend authorization.
+- Log actor, resolved student, action, confirmation, and API result without storing unnecessary message content.
+
+**Flow**
+
+`authorized message → validated intent → confirmed tool call → API authorization → audited write`
+
+**Boundary and risks**
+
+Security is layered across Telegram, Hermes, the API, and the database. Prompt injection, ambiguous student names, over-broad tools, leaked credentials, and unsafe mounts are residual risks. The public showcase should document policies and interfaces only, never operational secrets or private deployment settings.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
