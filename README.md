@@ -632,6 +632,25 @@ Hermes profile distributions package a complete agent setup—personality, skill
 
 This is a repeatable packaging and onboarding mechanism; it does not change the database schema or transfer student data. Unreviewed instructions, stale API contracts, or hidden environment assumptions could change agent behavior. Use reviewed, pinned versions and a setup checklist that explicitly separates public behavior files from private runtime configuration.
 
+### 43. Running Many Gateways at Once
+
+Hermes can run multiple gateway processes or containers, each associated with a separate profile, session space, and set of credentials ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/multi-profile-gateways)). This supports several bots or isolated environments on one machine.
+
+**ClassNote integration idea**
+
+- Use separate gateways for classroom use, administration, and testing only when those channels genuinely need different policies.
+- Point each gateway at the same narrow ClassNote API contract, while applying distinct role and tenant scopes at the API layer.
+- Keep each gateway’s conversation/session namespace separate so a test instruction cannot affect a classroom conversation.
+- Give every gateway a descriptive logical name in operational documentation; never rely on an unlabeled bot identity.
+
+**Flow**
+
+`channel → gateway/profile route → role-scoped ClassNote tools → ClassNote API`
+
+**Boundary and risks**
+
+This is a runtime and deployment pattern, not a schema change. Token collisions, wrong-profile routing, resource contention, and inconsistent skill versions are the main failure modes. The MVP should use one gateway; add multiple gateways only for a clear separation of roles, environments, or operational ownership.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
