@@ -911,6 +911,24 @@ Hermes can save encrypted website logins on the local machine and fill them into
 
 Do not enable this for the MVP. Prefer an approved export/API integration for external data. Revisit only for a narrowly scoped administrator workflow with written privacy approval and a read-only first phase.
 
+### 58. Document to Action Items
+
+The bundled Document to Action Items skill extracts cited obligations, deadlines, owners, and follow-ups from documents while preserving source locations and OCR uncertainty ([skill guide](https://hermes-agent.nousresearch.com/docs/user-guide/skills/bundled/productivity/productivity-document-to-action-items)).
+
+**ClassNote integration analysis**
+
+- **Business value:** A teacher could turn a lesson reflection, meeting note, or approved observation document into proposed student follow-ups without manually retyping every item.
+- **Extension point:** Use the skill after a document adapter extracts text; map only confirmed observation items into the ClassNote preview workflow.
+- **Responsibilities:** Hermes skill extracts and cites; the integration layer normalizes fields and confidence; ClassNote API resolves students and enforces review; the frontend displays provenance before approval.
+- **Data flow:** `document → extraction with page/section provenance → candidate observations → student lookup → comment preview → teacher confirmation → pending comment`.
+- **Interfaces/schema:** Add a transient extraction envelope with source reference, page/section, text, confidence, and candidate student names. The existing two-table schema is sufficient; provenance can remain in the comment evidence/source fields.
+- **Feasibility:** Medium. PDF/DOCX parsing, OCR quality, file-size limits, and human review are dependencies.
+- **Privacy/security:** Documents may contain many students or unrelated sensitive details. Apply purpose limitation, redaction, retention limits, access checks, and a fail-closed policy for low-confidence OCR or ambiguous names.
+
+**Recommendation**
+
+Adopt as a later batch-import assistant, starting with read-only extraction and cited previews. Never let the skill write comments directly or treat an extracted name as a unique student without API verification.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
