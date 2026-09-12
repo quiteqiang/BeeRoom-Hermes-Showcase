@@ -875,6 +875,24 @@ Hermes Webhooks receive external POST events, validate HMAC signatures, filter o
 
 Defer inbound webhooks until the direct Telegram workflow is stable. When added, start with signed, preview-only events and a single allowlisted source; require explicit confirmation before any comment is written.
 
+### 56. Open WebUI Integration
+
+Open WebUI can use Hermes’s OpenAI-compatible API server as a web chat frontend. Hermes remains the agent runtime: it owns the profile, tools, memory, skills, and server-side execution ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/open-webui)).
+
+**ClassNote integration analysis**
+
+- **Business value:** Provide a browser-based teacher or administrator workspace alongside Telegram, with conversation management and user accounts.
+- **Extension point:** Connect the frontend to the existing ClassNote API for business records; use Open WebUI only for conversational access to Hermes.
+- **Responsibilities:** Open WebUI renders chat; Hermes handles orchestration; the integration layer exposes typed ClassNote tools; ClassNote API enforces role and class scope; the existing frontend remains the authoritative review queue.
+- **Data flow:** `Open WebUI message → Hermes API server → ClassNote tool call → API → database → Hermes response → Open WebUI`.
+- **Interfaces/schema:** Use a stable OpenAI-compatible request/response adapter and correlation ID. No student or comment schema change is required.
+- **Feasibility:** Medium to high; authentication, server-side tool execution, conversation retention, and deployment separation must be designed.
+- **Privacy/security:** The Hermes API server executes tools where it runs, so do not grant unrestricted terminal or filesystem tools. Require separate authentication, avoid exposing operational endpoints publicly, and apply retention controls to chat history.
+
+**Recommendation**
+
+Treat Open WebUI as an optional internal operator interface, not a replacement for the ClassNote review UI. Start read-only, then add confirmed mutations only after identity mapping and audit behavior are proven.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
