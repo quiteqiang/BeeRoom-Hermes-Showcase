@@ -785,6 +785,24 @@ Hermes ships repository-maintained plugins that use the same hooks, tools, and s
 
 Built-in does not mean risk-free: enabling a plugin expands the agent’s tool surface and may add dependencies or credentials. Plugin discovery precedence can also replace a bundled plugin with a user or project plugin of the same name. Keep enablement explicit, audit changes, and ensure the public showcase contains no plugin secrets, local paths, or deployment configuration.
 
+### 51. Hermes Relay
+
+Hermes Relay is an experimental connector layer: a separate connector owns messaging-platform credentials, while the Hermes gateway dials out over one authenticated WebSocket and receives normalized events ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/relay)).
+
+**ClassNote integration analysis**
+
+- **Business value:** A shared connector could support multiple ClassNote teams without placing platform bot credentials on every Hermes host.
+- **Extension point:** Put Relay before the existing Hermes Telegram/Feishu adapter; keep the ClassNote tool contract unchanged.
+- **Responsibilities:** The connector owns platform sockets and media handling; Hermes owns session routing and intent orchestration; the integration layer validates normalized messages; ClassNote API owns authorization and persistence.
+- **Data flow:** `platform → connector → authenticated Relay WebSocket → Hermes profile → ClassNote API → database → connector → platform`.
+- **Interfaces/schema:** Add a normalized envelope with tenant, actor, chat/thread, message ID, text, attachment references, and capability flags. No student or comment schema change is required.
+- **Feasibility:** Medium because the feature is experimental and the connector contract may change. It is most useful for hosted or multi-tenant deployment, not a single local bot.
+- **Privacy/security:** Keep platform secrets in the connector, validate the tenant and clicking user, expire media references, and never pass raw credentials or arbitrary connector payloads to tools.
+
+**Recommendation**
+
+Do not make Relay an MVP dependency. Design the integration client around normalized message events so Relay can be added later, but keep the first deployment on the native adapter until the Relay contract and operational ownership are stable.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
