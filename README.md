@@ -839,6 +839,24 @@ Hermes can apply a different model, provider, or system-prompt override to a spe
 
 Use overrides for presentation and model policy after the API authorization mapping exists. Keep one conservative default prompt and expose write tools only to explicitly approved channels.
 
+### 54. Intentional Silence Tokens
+
+For group chats, hooks, and automation flows, Hermes can suppress delivery when the final response is exactly a supported silence token, while retaining the assistant turn in the session transcript ([Messaging Gateway guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/)).
+
+**ClassNote integration analysis**
+
+- **Business value:** Routine observation messages or unchanged scheduled checks can avoid noisy chat replies.
+- **Extension point:** Add a delivery policy after the ClassNote API result, never before validation or audit.
+- **Responsibilities:** Hermes decides whether to send; the integration layer must still record request outcome; the API remains responsible for review state and authorization.
+- **Data flow:** `teacher/event → Hermes intent → scoped read or preview → API result → delivery policy → visible reply or stored silence`.
+- **Interfaces/schema:** No database change. Define safe silence cases such as “no new review items”; errors, ambiguity, and pending confirmations must always produce a visible response.
+- **Feasibility:** High for read-only digests and hooks; low for teacher-initiated writes because silence can hide a needed confirmation.
+- **Privacy/security:** Do not use silence to conceal failures or rejected writes. Keep the audit record, distinguish “no reply” from “not processed,” and test exact-token handling to prevent accidental suppression.
+
+**Recommendation**
+
+Use silence only for explicitly defined, successful no-op notifications. Disable it for comment creation, student disambiguation, permissions errors, and review decisions.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
