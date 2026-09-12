@@ -803,6 +803,24 @@ Hermes Relay is an experimental connector layer: a separate connector owns messa
 
 Do not make Relay an MVP dependency. Design the integration client around normalized message events so Relay can be added later, but keep the first deployment on the native adapter until the Relay contract and operational ownership are stable.
 
+### 52. Durable Delivery Ledger
+
+Hermes records final responses around each platform send in a durable delivery ledger and can retry bounded, at-least-once delivery after a crash or rate limit ([Messaging Gateway guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/)).
+
+**ClassNote integration analysis**
+
+- **Business value:** A teacher is less likely to miss a confirmation request or review-queue result when the gateway restarts.
+- **Extension point:** Use the ledger for Hermes-to-teacher notifications; use ClassNote request IDs and idempotency keys for business writes.
+- **Responsibilities:** Hermes tracks outbound delivery state; the integration layer correlates a message with an API request; ClassNote stores the comment only once after a confirmed mutation.
+- **Data flow:** `agent result → delivery record → platform send → acknowledgement or retry → teacher`. For writes: `confirmation → idempotent API request → comment state → delivery of result`.
+- **Interfaces/schema:** Add a stable message correlation ID and idempotency key to tool requests. Do not copy Hermes delivery records into the two-table business database.
+- **Feasibility:** High for outbound reliability; the main dependency is making every write operation idempotent and separating “message redelivered” from “comment duplicated.”
+- **Privacy/security:** Retain only the minimum response metadata, restrict access to the ledger, and label uncertain redelivery so a teacher does not mistake a duplicate notification for a second comment.
+
+**Recommendation**
+
+Adopt delivery reliability for confirmations and review notifications, but keep business deduplication in the ClassNote API. Never rerun the LLM turn merely because an outbound message needs redelivery.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
