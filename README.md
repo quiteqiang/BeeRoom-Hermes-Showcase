@@ -857,6 +857,24 @@ For group chats, hooks, and automation flows, Hermes can suppress delivery when 
 
 Use silence only for explicitly defined, successful no-op notifications. Disable it for comment creation, student disambiguation, permissions errors, and review decisions.
 
+### 55. Webhook Event Entry
+
+Hermes Webhooks receive external POST events, validate HMAC signatures, filter or transform payloads, turn them into agent prompts, and optionally deliver a response to another platform ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/webhooks)).
+
+**ClassNote integration analysis**
+
+- **Business value:** School systems or approved workflow services could notify ClassNote about a new observation or request a review digest without requiring a teacher to copy and paste it.
+- **Extension point:** Add a dedicated inbound webhook route that calls a narrow Hermes skill and read-only or preview tools.
+- **Responsibilities:** The webhook edge validates signature, event type, replay window, and tenant; Hermes translates the event; the integration layer validates the payload; ClassNote API owns business rules and persistence.
+- **Data flow:** `external event → signed webhook → filter/transform → Hermes → preview or report tool → ClassNote API → optional notification`.
+- **Interfaces/schema:** Define an event envelope with source, event ID, tenant, actor, observation text, and timestamp. Add an idempotency key at the API boundary; no new core table is needed for the first version.
+- **Feasibility:** Medium because public ingress, signature verification, retries, and replay protection are required.
+- **Privacy/security:** Treat authenticated payloads as untrusted content, reject missing or stale signatures, restrict per-route toolsets, redact unnecessary student data, and never use insecure test bypasses in production.
+
+**Recommendation**
+
+Defer inbound webhooks until the direct Telegram workflow is stable. When added, start with signed, preview-only events and a single allowlisted source; require explicit confirmation before any comment is written.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
