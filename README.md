@@ -947,6 +947,24 @@ Hermes supports local speech-to-text through faster-whisper. The model runs on-d
 
 Make local faster-whisper the preferred STT path for the MVP. Keep TTS optional and separate: voice input should work without adding another speech-output provider.
 
+### 60. Grounded Citations
+
+The bundled Grounded Citations skill maintains a source ledger and requires outside claims in answers or documents to point to verifiable evidence. It can also mark unverified claims and reject evidence-free drafts ([skill guide](https://hermes-agent.nousresearch.com/docs/user-guide/skills/bundled/research/research-grounded-citations)).
+
+**ClassNote integration analysis**
+
+- **Business value:** Useful for administrator reports, policy explanations, and imported-document summaries where a teacher needs to know why a recommendation was produced.
+- **Extension point:** Add provenance metadata to the integration-layer preview and expose it in the frontend; do not use citations as a substitute for student identity validation.
+- **Responsibilities:** Hermes gathers and formats sources; the integration layer maps source references to the preview; ClassNote API persists only approved evidence fields; the frontend renders source context and confidence.
+- **Data flow:** `document/report request → source retrieval → evidence ledger → structured observation preview → teacher review → API persistence`.
+- **Interfaces/schema:** Reuse the comment’s evidence/source fields for compact provenance, or keep a transient ledger for reports. Do not store full external documents or private URLs in the core tables by default.
+- **Feasibility:** Medium for reports and imports; unnecessary for a simple teacher observation that originates from the teacher’s own message.
+- **Privacy/security:** External sources can be stale, private, or malicious. Restrict retrieval, redact personal data, validate source ownership, preserve uncertainty, and prevent citations from being interpreted as authorization to write.
+  
+**Recommendation**
+
+Use this selectively for document-derived or policy-oriented workflows. Keep the direct Telegram comment path concise, and require a fresh ClassNote API lookup plus explicit confirmation before any cited draft becomes a comment.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
