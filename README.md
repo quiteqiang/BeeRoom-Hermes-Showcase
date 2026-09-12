@@ -942,7 +942,7 @@ Hermes supports local speech-to-text through faster-whisper. The model runs on-d
 - **Interfaces/schema:** Pass transcript, language, confidence, and source type to the orchestration layer. Store only the approved structured comment and optional redacted source context; do not add an audio blob column to the two-table model.
 - **Feasibility:** High for a local deployment, with dependencies on model download, CPU/GPU capacity, audio conversion, language support, and transcript-quality testing.
 - **Privacy/security:** Delete temporary audio files after transcription, protect model/cache directories, avoid logging raw audio or unredacted transcripts, and ask for clarification when names or negations are uncertain.
-  
+
 **Recommendation**
 
 Make local faster-whisper the preferred STT path for the MVP. Keep TTS optional and separate: voice input should work without adding another speech-output provider.
@@ -960,7 +960,7 @@ The bundled Grounded Citations skill maintains a source ledger and requires outs
 - **Interfaces/schema:** Reuse the comment’s evidence/source fields for compact provenance, or keep a transient ledger for reports. Do not store full external documents or private URLs in the core tables by default.
 - **Feasibility:** Medium for reports and imports; unnecessary for a simple teacher observation that originates from the teacher’s own message.
 - **Privacy/security:** External sources can be stale, private, or malicious. Restrict retrieval, redact personal data, validate source ownership, preserve uncertainty, and prevent citations from being interpreted as authorization to write.
-  
+
 **Recommendation**
 
 Use this selectively for document-derived or policy-oriented workflows. Keep the direct Telegram comment path concise, and require a fresh ClassNote API lookup plus explicit confirmation before any cited draft becomes a comment.
