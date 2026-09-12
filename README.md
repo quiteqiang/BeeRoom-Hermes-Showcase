@@ -929,6 +929,24 @@ The bundled Document to Action Items skill extracts cited obligations, deadlines
 
 Adopt as a later batch-import assistant, starting with read-only extraction and cited previews. Never let the skill write comments directly or treat an extracted name as a unique student without API verification.
 
+### 59. Local faster-whisper STT
+
+Hermes supports local speech-to-text through faster-whisper. The model runs on-device, needs no speech API key, and can transcribe voice messages before the resulting text is passed to the agent ([Voice Mode guide](https://hermes-agent.nousresearch.com/docs/user-guide/features/voice-mode)).
+
+**ClassNote integration analysis**
+
+- **Business value:** Teachers can record quick classroom observations in Telegram while keeping the audio-to-text step local and reducing external audio transmission.
+- **Extension point:** Use the Hermes messaging adapter and STT provider before the existing natural-language orchestration layer; keep the integration API text-based.
+- **Responsibilities:** Hermes downloads/runs the local model and produces transcript text; the integration layer normalizes language and confidence; Hermes then selects ClassNote tools; the API validates the resolved student and comment.
+- **Data flow:** `voice message → Hermes local STT → transcript → intent extraction → student lookup → preview → confirmation → ClassNote API`.
+- **Interfaces/schema:** Pass transcript, language, confidence, and source type to the orchestration layer. Store only the approved structured comment and optional redacted source context; do not add an audio blob column to the two-table model.
+- **Feasibility:** High for a local deployment, with dependencies on model download, CPU/GPU capacity, audio conversion, language support, and transcript-quality testing.
+- **Privacy/security:** Delete temporary audio files after transcription, protect model/cache directories, avoid logging raw audio or unredacted transcripts, and ask for clarification when names or negations are uncertain.
+  
+**Recommendation**
+
+Make local faster-whisper the preferred STT path for the MVP. Keep TTS optional and separate: voice input should work without adding another speech-output provider.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
