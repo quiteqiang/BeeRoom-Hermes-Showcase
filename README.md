@@ -821,6 +821,24 @@ Hermes records final responses around each platform send in a durable delivery l
 
 Adopt delivery reliability for confirmations and review notifications, but keep business deduplication in the ClassNote API. Never rerun the LLM turn merely because an outbound message needs redelivery.
 
+### 53. Per-Channel Model and System Prompt Overrides
+
+Hermes can apply a different model, provider, or system-prompt override to a specific channel or thread while sharing one gateway ([Messaging Gateway guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/)).
+
+**ClassNote integration analysis**
+
+- **Business value:** A teacher channel can use a concise classroom persona, while an administrator channel can use a reporting persona without duplicating the whole gateway.
+- **Extension point:** Bind channel identity to a ClassNote role and class scope in the integration layer; use Hermes overrides only for behavior and model selection.
+- **Responsibilities:** Hermes resolves channel configuration; the integration layer maps the channel to an authorized scope; the API enforces the scope on every request; the frontend shows the same normalized records.
+- **Data flow:** `channel/thread → Hermes override → scoped intent/tool call → ClassNote authorization → response`.
+- **Interfaces/schema:** Define a configuration mapping of logical channel labels to role and allowed operations. Do not put tenant authorization solely in a prompt and do not change the student/comment tables for this feature.
+- **Feasibility:** High, but configuration management and test coverage are required because a prompt override is ephemeral and can replace the global gateway prompt.
+- **Privacy/security:** A wrong channel ID could expose a broader toolset. Fail closed on unknown channels, display the active scope in admin tooling, and keep private channel IDs out of public documentation.
+
+**Recommendation**
+
+Use overrides for presentation and model policy after the API authorization mapping exists. Keep one conservative default prompt and expose write tools only to explicitly approved channels.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
