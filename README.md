@@ -893,6 +893,24 @@ Open WebUI can use Hermes’s OpenAI-compatible API server as a web chat fronten
 
 Treat Open WebUI as an optional internal operator interface, not a replacement for the ClassNote review UI. Start read-only, then add confirmed mutations only after identity mapping and audit behavior are proven.
 
+### 57. Passwords and Logins
+
+Hermes can save encrypted website logins on the local machine and fill them into browser pages without exposing passwords to the model. It also supports masked verification prompts and selected two-factor flows ([official guide](https://hermes-agent.nousresearch.com/docs/user-guide/features/credential-vault)).
+
+**ClassNote integration analysis**
+
+- **Business value:** Minimal for the core comment workflow; it could help an administrator access an approved external school system during a future browser-based import.
+- **Extension point:** Keep the vault inside the Hermes browser tool boundary, never inside the ClassNote API or database.
+- **Responsibilities:** Hermes handles secret storage and page filling; the integration layer receives only sanitized results; ClassNote API accepts a structured import or observation after validation.
+- **Data flow:** `operator approval → Hermes fills external login → page data is extracted → redacted/validated payload → ClassNote preview → explicit confirmation → API write`.
+- **Interfaces/schema:** Define an import envelope with source, actor, extracted fields, and provenance. Do not add password columns or store login material in either business table.
+- **Feasibility:** Low priority and medium complexity because browser workflows, MFA, and source-specific parsing are brittle.
+- **Privacy/security:** This is a high-risk capability. Use origin-bound credentials, masked prompts, least privilege, browser isolation, and strict redaction. Never send passwords, session tokens, or raw page content to the model or public repository.
+
+**Recommendation**
+
+Do not enable this for the MVP. Prefer an approved export/API integration for external data. Revisit only for a narrowly scoped administrator workflow with written privacy approval and a read-only first phase.
+
 ## Showcase scope
 
 This repository explains the business problem, user flow, Hermes responsibilities, API boundary, two-table model, review workflow, and privacy principles.
